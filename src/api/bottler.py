@@ -42,12 +42,14 @@ def get_bottle_plan():
         for row in green_ml_table:
             green_ml = row[0]
         potions = green_ml // 100
-        return [
-                {
-                    "potion_type": [0, 100, 0, 0],
-                    "quantity": potions,
-                }
-            ]
+        if potions > 0:
+            return [
+                    {
+                        "potion_type": [0, 100, 0, 0],
+                        "quantity": potions,
+                    }
+                ]
+        return []
 
 if __name__ == "__main__":
     print(get_bottle_plan())
