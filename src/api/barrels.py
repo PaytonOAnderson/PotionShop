@@ -26,16 +26,8 @@ def post_deliver_barrels(barrels_delivered: list[Barrel], order_id: int):
     with db.engine.begin() as connection:
         for barrels in barrels_delivered:
             if barrels.potion_type == [0, 1, 0, 0]:
-                gold_table = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
-                for row in gold_table:
-                    gold = row[0]
-                print(f'result {gold}')
                 connection.execute(sqlalchemy.text(f"Update global_inventory SET gold = gold - {barrels.price}"))
                 connection.execute(sqlalchemy.text(f"Update global_inventory SET num_green_ml = num_green_ml + {barrels.ml_per_barrel}"))
-                gold_table = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
-                for row in gold_table:
-                    gold = row[0]
-                print(f'result {gold}')
 
     return "OK"
 
