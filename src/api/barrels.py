@@ -40,6 +40,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         green_potions_table = connection.execute(sqlalchemy.text("SELECT num_green_potions FROM global_inventory"))
         for row in green_potions_table:
             green_potions = row[0]
+        # currently buying one barrel if less than ten potions and can afford it
         if green_potions < 10:
             for barrel in wholesale_catalog:
                 if barrel.sku == "SMALL_GREEN_BARREL" and gold >= barrel.price:
