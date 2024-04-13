@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from src.api import auth
 import sqlalchemy
 from src import database as db
+from src.api.inventory import INVENTORY
 
 router = APIRouter(
     prefix="/bottler",
@@ -21,9 +22,15 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory], order_id: int
     print(f"potions delievered: {potions_delivered} order_id: {order_id}")
     with db.engine.begin() as connection:
         for potion in potions_delivered:
-            if potion.potion_type == [0, 1, 0, 0]:
-                connection.execute(sqlalchemy.text(f"Update global_inventory SET num_green_ml = num_green_ml - {potion.quantity * 100}"))
-                connection.execute(sqlalchemy.text(f"Update global_inventory SET num_green_potions = num_green_potions + {potion.quantity}"))
+            if potion.potion_type == [0, 100, 0, 0]:
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_ml = num_green_ml - {potion.quantity * 100}"))
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_potions = num_green_potions + {potion.quantity}"))
+            if potion.potion_type == [100, 0, 0, 0]:
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_ml = num_red_ml - {potion.quantity * 100}"))
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_potions = num_red_potions + {potion.quantity}"))
+            if potion.potion_type == [0, 0, 100, 0]:
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_ml = num_blue_ml - {potion.quantity * 100}"))
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_potions = num_blue_potions + {potion.quantity}"))
     return "OK"
 
 @router.post("/plan")
@@ -38,7 +45,7 @@ def get_bottle_plan():
 
     # Initial logic: bottle all barrels into red potions.
     with db.engine.begin() as connection:
-        green_ml_table = connection.execute(sqlalchemy.text("SELECT num_green_ml FROM global_inventory"))
+        green_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}"))
         for row in green_ml_table:
             green_ml = row[0]
         potions = green_ml // 100

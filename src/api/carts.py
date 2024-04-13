@@ -4,6 +4,8 @@ from src.api import auth
 from enum import Enum
 import sqlalchemy
 from src import database as db
+from src.api.inventory import INVENTORY
+
 
 router = APIRouter(
     prefix="/carts",
@@ -108,12 +110,12 @@ class CartCheckout(BaseModel):
 def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
     with db.engine.begin() as connection:
-        gold_table = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
+        gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
             gold = row[0]
-        green_potions_table = connection.execute(sqlalchemy.text("SELECT num_green_potions FROM global_inventory"))
+        green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
         for row in green_potions_table:
             green_potions = row[0]
-        connection.execute(sqlalchemy.text(f"Update global_inventory SET gold = {gold + 25}"))
-        connection.execute(sqlalchemy.text(f"Update global_inventory SET num_green_potions = {green_potions - 1}"))
+        connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = {gold + 25}"))
+        connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_potions = {green_potions - 1}"))
     return {"total_potions_bought": 1, "total_gold_paid": 25}

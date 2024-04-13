@@ -5,6 +5,10 @@ import math
 import sqlalchemy
 from src import database as db
 
+# INVENTORY = "testing_global_inventory"
+INVENTORY = "global_inventory"
+
+
 router = APIRouter(
     prefix="/inventory",
     tags=["inventory"],
@@ -15,13 +19,13 @@ router = APIRouter(
 def get_inventory():
     """ """
     with db.engine.begin() as connection:
-        gold_table = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
+        gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
             gold = row[0]
-        green_potions_table = connection.execute(sqlalchemy.text("SELECT num_green_potions FROM global_inventory"))
+        green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
         for row in green_potions_table:
             green_potions = row[0]
-        green_ml_table = connection.execute(sqlalchemy.text("SELECT num_green_ml FROM global_inventory"))
+        green_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}"))
         for row in green_ml_table:
             green_ml = row[0]
         print(f'potions: {green_potions}\n ml: {green_ml}\ngold: {gold}')
