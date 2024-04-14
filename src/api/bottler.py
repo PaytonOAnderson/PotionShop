@@ -45,18 +45,42 @@ def get_bottle_plan():
 
     # Initial logic: bottle all barrels into red potions.
     with db.engine.begin() as connection:
+        result = []
         green_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}"))
         for row in green_ml_table:
             green_ml = row[0]
-        potions = green_ml // 100
-        if potions > 0:
-            return [
-                    {
-                        "potion_type": [0, 100, 0, 0],
-                        "quantity": potions,
-                    }
-                ]
-        return []
+        green_potions = green_ml // 100
+        if green_potions > 0:
+            result.append(
+                {
+                    "potion_type": [0, 100, 0, 0],
+                    "quantity": green_potions,
+                }
+            )
+        red_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_red_ml FROM {INVENTORY}"))
+        for row in red_ml_table:
+            red_ml = row[0]
+        red_potions = red_ml // 100
+        if red_potions > 0:
+            result.append(
+                {
+                    "potion_type": [0, 100, 0, 0],
+                    "quantity": red_potions,
+                }
+            )
+        blue_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}"))
+        for row in blue_ml_table:
+            blue_ml = row[0]
+        blue_potions = blue_ml // 100
+        if blue_potions > 0:
+            result.append(
+                {
+                    "potion_type": [0, 100, 0, 0],
+                    "quantity": blue_potions,
+                }
+            )
+        return result
+        
 
 if __name__ == "__main__":
     print(get_bottle_plan())
