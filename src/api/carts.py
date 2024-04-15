@@ -89,7 +89,11 @@ def post_visits(visit_id: int, customers: list[Customer]):
 @router.post("/")
 def create_cart(new_cart: Customer):
     """ """
-    return {"cart_id": 1}
+    #TODO make a unique cart id and create an empty cart for the customer
+    with db.engine.begin() as connection:
+        count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM carts")).fetchone()[0]
+        connection.execute(sqlalchemy.text(f"INSERT INTO carts (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
+        return {"cart_id": count + 1}
 
 
 class CartItem(BaseModel):
@@ -99,6 +103,7 @@ class CartItem(BaseModel):
 @router.post("/{cart_id}/items/{item_sku}")
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
+    #TODO add items to the cart of the customer with the cart_id given
 
     return "OK"
 
@@ -109,6 +114,7 @@ class CartCheckout(BaseModel):
 @router.post("/{cart_id}/checkout")
 def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
+    #TODO update database based on what was sold\
     with db.engine.begin() as connection:
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
