@@ -91,7 +91,7 @@ def create_cart(new_cart: Customer):
     """ """
     with db.engine.begin() as connection:
         count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM carts")).fetchone()[0]
-        connection.execute(sqlalchemy.text(f"INSERT INTO custormers (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
+        connection.execute(sqlalchemy.text(f"INSERT INTO customers (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
         return {"cart_id": count + 1}
 
 
@@ -104,7 +104,9 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     #TODO add items to the cart of the customer with the cart_id given
     with db.engine.begin() as connection:
-        connection.execute(sqlalchemy.text(f"INSERT INTO carts (id, character_id, item_id, item_qty) VALUES ({cart_id}, {cart_id}, {cart_item.quantity})"))
+        item_id = connection.execute(sqlalchemy.text(f"SELECT id FROM items WHERE sku = '{item_sku}'")).fetchone()[0]
+        print(item_id)
+        connection.execute(sqlalchemy.text(f"INSERT INTO carts (id, character_id, item_qty, item_id) VALUES ({cart_id}, {cart_id}, {cart_item.quantity}, '{item_id}')"))
     return "OK"
 
 
@@ -116,9 +118,30 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
     #TODO update database based on what was sold
     with db.engine.begin() as connection:
+        print(f"payment str: {cart_checkout.payment}")
+        potions_bought = 0
+        gold_paid = 0
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
             gold = row[0]
+        cart_items = connection.execute(sqlalchemy.text(f"SELECT * FROM carts WHERE id = {cart_id}"))
+        for item in cart_items:
+            item_qty = item[3]
+            item_id = item[4]
+            cost = connection.execute(sqlalchemy.text("SELECT cost FROM items")).fetchone()[0]
+            gold_paid += cost * item_qty
+            potions_bought += item_qty
+            connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET gold = gold + {cost * item_qty}"))
+            color = 'num_green_potions'
+            if item_id == 2:
+                color = 'num_red_potions'
+            elif item_id == 4:
+                color = 'num_blue_potions'
+            connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET {color} = {color} - {item_qty}"))
+            print(item_id)
+            print(f"item qty: {item_qty}")
+        return {"total_potions_bought": potions_bought, "total_gold_paid": gold_paid}
+
         green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
         for row in green_potions_table:
             green_potions = row[0]
