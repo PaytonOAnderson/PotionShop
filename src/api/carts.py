@@ -89,10 +89,9 @@ def post_visits(visit_id: int, customers: list[Customer]):
 @router.post("/")
 def create_cart(new_cart: Customer):
     """ """
-    #TODO make a unique cart id and create an empty cart for the customer
     with db.engine.begin() as connection:
         count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM carts")).fetchone()[0]
-        connection.execute(sqlalchemy.text(f"INSERT INTO carts (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
+        connection.execute(sqlalchemy.text(f"INSERT INTO custormers (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
         return {"cart_id": count + 1}
 
 
@@ -104,7 +103,8 @@ class CartItem(BaseModel):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     #TODO add items to the cart of the customer with the cart_id given
-
+    with db.engine.begin() as connection:
+        connection.execute(sqlalchemy.text(f"INSERT INTO carts (id, character_id, item_id, item_qty) VALUES ({cart_id}, {cart_id}, {cart_item.quantity})"))
     return "OK"
 
 
@@ -114,7 +114,7 @@ class CartCheckout(BaseModel):
 @router.post("/{cart_id}/checkout")
 def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
-    #TODO update database based on what was sold\
+    #TODO update database based on what was sold
     with db.engine.begin() as connection:
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
@@ -122,6 +122,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
         for row in green_potions_table:
             green_potions = row[0]
-        connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = {gold + 25}"))
+        sell_price = 50
+        connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = {gold + sell_price}"))
         connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_potions = {green_potions - 1}"))
-    return {"total_potions_bought": 1, "total_gold_paid": 25}
+    return {"total_potions_bought": 1, "total_gold_paid": sell_price}
