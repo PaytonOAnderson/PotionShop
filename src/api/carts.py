@@ -102,10 +102,8 @@ class CartItem(BaseModel):
 @router.post("/{cart_id}/items/{item_sku}")
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
-    #TODO add items to the cart of the customer with the cart_id given
     with db.engine.begin() as connection:
         item_id = connection.execute(sqlalchemy.text(f"SELECT id FROM items WHERE sku = '{item_sku}'")).fetchone()[0]
-        print(item_id)
         connection.execute(sqlalchemy.text(f"INSERT INTO carts (id, character_id, item_qty, item_id) VALUES ({cart_id}, {cart_id}, {cart_item.quantity}, '{item_id}')"))
     return "OK"
 
@@ -138,8 +136,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             elif item_id == 4:
                 color = 'num_blue_potions'
             connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET {color} = {color} - {item_qty}"))
-            print(item_id)
-            print(f"item qty: {item_qty}")
+            print(f"item_id: {item_id}, item qty: {item_qty}")
         return {"total_potions_bought": potions_bought, "total_gold_paid": gold_paid}
 
         green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
