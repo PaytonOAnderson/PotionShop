@@ -24,36 +24,33 @@ def get_catalog():
         result = []
         print(f'green: {green_potions}\nred: {red_potions}\nblue: {blue_potions}')
         if green_potions > 0:
-            result.append([
-                    {
-                        "sku": "GREEN_POTION_0",
-                        "name": "green potion",
-                        "quantity": green_potions,
-                        "price": 50,
-                        "potion_type": [0, 100, 0, 0]
-                    }
-                ]
+            result.append(
+                {
+                    "sku": "GREEN_POTION_0",
+                    "name": "green potion",
+                    "quantity": green_potions,
+                    "price": 50,
+                    "potion_type": [0, 100, 0, 0]
+                }
             )
         if red_potions > 0:
-            result.append([
-                    {
-                        "sku": "RED_POTION_0",
-                        "name": "red potion",
-                        "quantity": red_potions,
-                        "price": 50,
-                        "potion_type": [100, 0, 0, 0]
-                    }
-                ]
+            result.append(
+                {
+                    "sku": "RED_POTION_0",
+                    "name": "red potion",
+                    "quantity": red_potions,
+                    "price": 50,
+                    "potion_type": [100, 0, 0, 0]
+                }
             )
         if blue_potions > 0:
-            result.append([
-                    {
-                        "sku": "BLUE_POTION_0",
-                        "name": "blue potion",
-                        "quantity": blue_potions,
-                        "price": 50,
-                        "potion_type": [100, 0, 0, 0]
-                    }
-                ]
+            result.append(
+                {
+                    "sku": "BLUE_POTION_0",
+                    "name": "blue potion",
+                    "quantity": blue_potions,
+                    "price": 50,
+                    "potion_type": [100, 0, 0, 0]
+                }
             )
         return result
