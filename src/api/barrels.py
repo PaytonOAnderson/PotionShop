@@ -44,7 +44,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel], order_id: int):
 def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     with db.engine.begin() as connection:
-    
+        result = []
         print(wholesale_catalog)
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
@@ -54,30 +54,57 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         for row in green_potions_table:
             green_potions = row[0]
         # currently buying one small barrel of a random color if I can afford it
-        
-        random_num = random.randint(1, 3)
-        for barrel in wholesale_catalog:
-            if random_num == 1 and barrel.sku == "SMALL_GREEN_BARREL" and gold >= barrel.price:
-                return [
-                    {
-                        "sku": "SMALL_GREEN_BARREL",
-                        "quantity": 1
-                    }
-                ]
-            if random_num == 2 and barrel.sku == "SMALL_RED_BARREL" and gold >= barrel.price:
-                return [
-                    {
-                        "sku": "SMALL_RED_BARREL",
-                        "quantity": 1
-                    }
-                ]
-            if random_num == 3 and barrel.sku == "SMALL_BLUE_BARREL" and gold >= barrel.price:
-                return [
-                    {
-                        "sku": "SMALL_BLUE_BARREL",
-                        "quantity": 1
-                    }
-                ]
-    return []
+        if gold >= 250:
+            if gold >= 300 :
+                random_num = random.randint(1, 3)
+            else: random_num = random.randint(1, 2)
+            for barrel in wholesale_catalog:
+                if random_num == 1 and barrel.sku == "MEDIUM_GREEN_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "MEDIUM_GREEN_BARREL",
+                            "quantity": 1
+                        }
+                    ]
+                if random_num == 2 and barrel.sku == "MEDIUM_RED_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "MEDIUM_RED_BARREL",
+                            "quantity": 1
+                        }
+                    ]
+                if random_num == 3 and barrel.sku == "MEDIUM_BLUE_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "MEDIUM_BLUE_BARREL",
+                            "quantity": 1
+                        }
+                    ]
+        if gold >= 100:
+            random_num = random.randint(1, 2)
+            if gold >= 120: random_num = random.randint(1, 3)
+            for barrel in wholesale_catalog:
+                if random_num == 1 and barrel.sku == "SMALL_GREEN_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "SMALL_GREEN_BARREL",
+                            "quantity": 1
+                        }
+                    ]
+                if random_num == 2 and barrel.sku == "SMALL_RED_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "SMALL_RED_BARREL",
+                            "quantity": 1
+                        }
+                    ]
+                if random_num == 3 and barrel.sku == "SMALL_BLUE_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "SMALL_BLUE_BARREL",
+                            "quantity": 1
+                        }
+                    ]
+    return result
         
 
