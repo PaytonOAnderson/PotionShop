@@ -138,11 +138,3 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET {color} = {color} - {item_qty}"))
             print(f"item_id: {item_id}, item qty: {item_qty}")
         return {"total_potions_bought": potions_bought, "total_gold_paid": gold_paid}
-
-        green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
-        for row in green_potions_table:
-            green_potions = row[0]
-        sell_price = 50
-        connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = {gold + sell_price}"))
-        connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_potions = {green_potions - 1}"))
-    return {"total_potions_bought": 1, "total_gold_paid": sell_price}
