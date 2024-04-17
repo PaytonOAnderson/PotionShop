@@ -12,3 +12,7 @@ ITEMS = 'items'
 
 CAPACITY = 'capacity'
 # CAPACITY = 'testing_capacity'
+
+
+CAPACITY = 'capacity'
+# CAPACITY = 'testing_capacity'
