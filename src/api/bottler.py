@@ -4,10 +4,9 @@ from pydantic import BaseModel
 from src.api import auth
 import sqlalchemy
 from src import database as db
-from src.api.inventory import INVENTORY
+from db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
 
-ITEMS = 'items'
-# ITEMS = "testing_items"
+
 
 router = APIRouter(
     prefix="/bottler",

@@ -4,13 +4,8 @@ from src.api import auth
 from enum import Enum
 import sqlalchemy
 from src import database as db
-from src.api.inventory import INVENTORY
+from db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
 
-# CARTS = "carts"
-CARTS = "testing_carts"
-
-CUSTOMER = 'customer'
-# CUSTOMER = 'testing_customer'
 
 
 router = APIRouter(
@@ -109,7 +104,7 @@ class CartItem(BaseModel):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     with db.engine.begin() as connection:
-        item_id = connection.execute(sqlalchemy.text(f"SELECT id FROM items WHERE sku = '{item_sku}'")).fetchone()[0]
+        item_id = connection.execute(sqlalchemy.text(f"SELECT id FROM {ITEMS} WHERE sku = '{item_sku}'")).fetchone()[0]
         connection.execute(sqlalchemy.text(f"INSERT INTO {CARTS} (id, character_id, item_qty, item_id) VALUES ({cart_id}, {cart_id}, {cart_item.quantity}, '{item_id}')"))
     return "OK"
 
@@ -125,22 +120,15 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         print(f"payment str: {cart_checkout.payment}")
         potions_bought = 0
         gold_paid = 0
-        gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
-        for row in gold_table:
-            gold = row[0]
         cart_items = connection.execute(sqlalchemy.text(f"SELECT * FROM {CARTS} WHERE id = {cart_id}"))
         for item in cart_items:
-            item_qty = item[3]
-            item_id = item[4]
-            cost = connection.execute(sqlalchemy.text("SELECT cost FROM items")).fetchone()[0]
+            item_qty = item.item_qty
+            item_id = item.item_id
+            cost = connection.execute(sqlalchemy.text(f"SELECT cost FROM {ITEMS} WHERE id = {item_id}")).fetchone()[0]
             gold_paid += cost * item_qty
             potions_bought += item_qty
             connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET gold = gold + {cost * item_qty}"))
-            color = 'num_green_potions'
-            if item_id == 2:
-                color = 'num_red_potions'
-            elif item_id == 4:
-                color = 'num_blue_potions'
-            connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET {color} = {color} - {item_qty}"))
+            connection.execute(sqlalchemy.text(f"UPDATE {ITEMS} SET qty = qty - {item_qty} WHERE id = {item_id}"))
+            connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET num_potions = num_potions - {item_qty}"))
             print(f"item_id: {item_id}, item qty: {item_qty}")
         return {"total_potions_bought": potions_bought, "total_gold_paid": gold_paid}

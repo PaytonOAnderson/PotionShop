@@ -4,9 +4,7 @@ from src.api import auth
 import math
 import sqlalchemy
 from src import database as db
-
-# INVENTORY = "testing_global_inventory"
-INVENTORY = "global_inventory"
+from db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
 
 
 router = APIRouter(
