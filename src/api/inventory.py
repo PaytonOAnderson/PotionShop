@@ -4,7 +4,7 @@ from src.api import auth
 import math
 import sqlalchemy
 from src import database as db
-from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
+from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS, CAPACITY
 
 
 router = APIRouter(
@@ -37,11 +37,25 @@ def get_capacity_plan():
     Start with 1 capacity for 50 potions and 1 capacity for 10000 ml of potion. Each additional 
     capacity unit costs 1000 gold.
     """
-
-    return {
-        "potion_capacity": 0,
-        "ml_capacity": 0
-        }
+    with db.engine.begin() as connection:
+        gold = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}")).fetchone()[0]
+        current_potion_capacity = connection.execute(sqlalchemy.text(f"SELECT potion_capacity FROM {CAPACITY}")).fetchone()[0] // 50
+        current_ml_capacity = connection.execute(sqlalchemy.text(f"SELECT ml_capacity FROM {CAPACITY}")).fetchone()[0] // 10000
+        potion_capacity = 0
+        ml_capacity = 0
+        if gold >= 2100:
+            potion_capacity = 1
+            ml_capacity = 1
+        if gold >= 1100:
+            if current_ml_capacity >= current_potion_capacity:
+                potion_capacity = 1
+            else:
+                ml_capacity = 1
+        
+        return {
+            "potion_capacity": potion_capacity,
+            "ml_capacity": ml_capacity
+            }
 
 class CapacityPurchase(BaseModel):
     potion_capacity: int

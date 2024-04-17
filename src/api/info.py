@@ -17,5 +17,6 @@ def post_time(timestamp: Timestamp):
     """
     Share current time.
     """
+    #TODO add current time to a databases to attack to transactions to see if date/time affects purchases
     return "OK"
 

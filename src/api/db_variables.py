@@ -9,3 +9,6 @@ CUSTOMER = 'customers'
 
 ITEMS = 'items'
 # ITEMS = "testing_items"
+
+CAPACITY = 'capacity'
+# CAPACITY = 'testing_capacity'
