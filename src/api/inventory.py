@@ -70,6 +70,7 @@ def deliver_capacity_plan(capacity_purchase : CapacityPurchase, order_id: int):
     """
     with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text(f"Update {CAPACITY} SET ml_capacity = ml_capacity + {10000 * capacity_purchase.ml_capacity}"))
-        connection.execute(sqlalchemy.text(f"Update {CAPACITY} SET potion_capacity = ml_capacity + {50 * capacity_purchase.ml_capacity}"))
+        connection.execute(sqlalchemy.text(f"Update {CAPACITY} SET potion_capacity = potion_capacity + {50 * capacity_purchase.potion_capacity}"))
+        connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {1000 * (capacity_purchase.ml_capacity + capacity_purchase.potion_capacity)}"))
 
     return "OK"
