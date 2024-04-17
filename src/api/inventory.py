@@ -22,14 +22,15 @@ def get_inventory():
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
             gold = row[0]
-        green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
-        for row in green_potions_table:
-            green_potions = row[0]
-        green_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}"))
-        for row in green_ml_table:
-            green_ml = row[0]
-        print(f'potions: {green_potions}\n ml: {green_ml}\ngold: {gold}')
-    return {"number_of_potions": green_potions, "ml_in_barrels": green_ml, "gold": gold}
+        potions = connection.execute(sqlalchemy.text(f"SELECT num_potions FROM {INVENTORY}")).fetchone()[0]
+        red_ml = connection.execute(sqlalchemy.text(f"SELECT num_red_ml FROM {INVENTORY}")).fetchone()[0]
+        green_ml = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}")).fetchone()[0]
+        blue_ml = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}")).fetchone()[0]
+        dark_ml = connection.execute(sqlalchemy.text(f"SELECT num_dark_ml FROM {INVENTORY}")).fetchone()[0]
+        total_ml = red_ml + green_ml + blue_ml + dark_ml
+
+        print(f'potions: {potions}\n ml: {total_ml}\ngold: {gold}')
+    return {"number_of_potions": potions, "ml_in_barrels": total_ml, "gold": gold}
 
 # Gets called once a day
 @router.post("/plan")

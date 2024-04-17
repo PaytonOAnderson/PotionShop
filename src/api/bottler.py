@@ -6,6 +6,9 @@ import sqlalchemy
 from src import database as db
 from src.api.inventory import INVENTORY
 
+ITEMS = 'items'
+# ITEMS = "testing_items"
+
 router = APIRouter(
     prefix="/bottler",
     tags=["bottler"],
@@ -22,22 +25,13 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory], order_id: int
     print(f"potions delievered: {potions_delivered} order_id: {order_id}")
     with db.engine.begin() as connection:
         for potion in potions_delivered:
-            if potion.potion_type == [0, 100, 0, 0]:
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_ml = num_green_ml - {potion.quantity * 100}"))
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_potions = num_green_potions + {potion.quantity}"))
-            if potion.potion_type == [100, 0, 0, 0]:
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_ml = num_red_ml - {potion.quantity * 100}"))
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_potions = num_red_potions + {potion.quantity}"))
-            if potion.potion_type == [0, 0, 100, 0]:
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_ml = num_blue_ml - {potion.quantity * 100}"))
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_potions = num_blue_potions + {potion.quantity}"))
             # update item table to include potion created
             connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_ml = num_red_ml - {potion.potion_type[0] * potion.quantity}"))
             connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_ml = num_green_ml - {potion.potion_type[1] * potion.quantity}"))
             connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_ml = num_blue_ml - {potion.potion_type[2] * potion.quantity}"))
             connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_dark_ml = num_dark_ml - {potion.potion_type[3] * potion.quantity}"))
             connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_potions = num_potions + {potion.quantity}"))
-            connection.execute(sqlalchemy.text(f"UPDATE items SET qty = qty + {potion.quantity} WHERE red_qty = {potion.potion_type[0]} AND green_qty = {potion.potion_type[1]} AND blue_qty = {potion.potion_type[2]} AND dark_qty = {potion.potion_type[3]}"))
+            connection.execute(sqlalchemy.text(f"UPDATE {ITEMS} SET qty = qty + {potion.quantity} WHERE red_qty = {potion.potion_type[0]} AND green_qty = {potion.potion_type[1]} AND blue_qty = {potion.potion_type[2]} AND dark_qty = {potion.potion_type[3]}"))
     return "OK"
 
 @router.post("/plan")
@@ -71,7 +65,7 @@ def get_bottle_plan():
         if red_potions > 0:
             result.append(
                 {
-                    "potion_type": [0, 100, 0, 0],
+                    "potion_type": [100, 0, 0, 0],
                     "quantity": red_potions,
                 }
             )
@@ -82,7 +76,7 @@ def get_bottle_plan():
         if blue_potions > 0:
             result.append(
                 {
-                    "potion_type": [0, 100, 0, 0],
+                    "potion_type": [0, 0, 100, 0],
                     "quantity": blue_potions,
                 }
             )

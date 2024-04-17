@@ -6,6 +6,12 @@ import sqlalchemy
 from src import database as db
 from src.api.inventory import INVENTORY
 
+CARTS = "carts"
+# CARTS = "testing_carts"
+
+COSTOMER = 'customer'
+# COSTOMER = 'testing_customer'
+
 
 router = APIRouter(
     prefix="/carts",
@@ -90,8 +96,8 @@ def post_visits(visit_id: int, customers: list[Customer]):
 def create_cart(new_cart: Customer):
     """ """
     with db.engine.begin() as connection:
-        count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM carts")).fetchone()[0]
-        connection.execute(sqlalchemy.text(f"INSERT INTO customers (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
+        count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {CARTS}")).fetchone()[0]
+        connection.execute(sqlalchemy.text(f"INSERT INTO {CUSTOMER} (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
         return {"cart_id": count + 1}
 
 
@@ -104,7 +110,7 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     with db.engine.begin() as connection:
         item_id = connection.execute(sqlalchemy.text(f"SELECT id FROM items WHERE sku = '{item_sku}'")).fetchone()[0]
-        connection.execute(sqlalchemy.text(f"INSERT INTO carts (id, character_id, item_qty, item_id) VALUES ({cart_id}, {cart_id}, {cart_item.quantity}, '{item_id}')"))
+        connection.execute(sqlalchemy.text(f"INSERT INTO {CARTS} (id, character_id, item_qty, item_id) VALUES ({cart_id}, {cart_id}, {cart_item.quantity}, '{item_id}')"))
     return "OK"
 
 
@@ -122,7 +128,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
             gold = row[0]
-        cart_items = connection.execute(sqlalchemy.text(f"SELECT * FROM carts WHERE id = {cart_id}"))
+        cart_items = connection.execute(sqlalchemy.text(f"SELECT * FROM {CARTS} WHERE id = {cart_id}"))
         for item in cart_items:
             item_qty = item[3]
             item_id = item[4]

@@ -28,14 +28,14 @@ def post_deliver_barrels(barrels_delivered: list[Barrel], order_id: int):
     with db.engine.begin() as connection:
         for barrels in barrels_delivered:
             if barrels.potion_type == [0, 1, 0, 0]:
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.price}"))
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_ml = num_green_ml + {barrels.ml_per_barrel}"))
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.quantity * barrels.price}"))
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_ml = num_green_ml + {barrels.quantity * barrels.ml_per_barrel}"))
             if barrels.potion_type == [1, 0, 0, 0]:
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.price}"))
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_ml = num_red_ml + {barrels.ml_per_barrel}"))
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_ml = num_red_ml + {barrels.quantity * barrels.ml_per_barrel}"))
             if barrels.potion_type == [0, 0, 1, 0]:
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.price}"))
-                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_ml = num_blue_ml + {barrels.ml_per_barrel}"))
+                connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_ml = num_blue_ml + {barrels.quantity * barrels.ml_per_barrel}"))
 
     return "OK"
 
