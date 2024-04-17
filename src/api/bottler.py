@@ -46,13 +46,15 @@ def get_bottle_plan():
     # Initial logic: bottle all barrels into red potions.
     total_potions = connection.execute(sqlalchemy.text(f"SELECT num_potions FROM {INVENTORY}")).fetchone()[0]
     with db.engine.begin() as connection:
+        #TODO check what the limit is and update it
+        potion_limit = 50
         result = []
         green_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}"))
         for row in green_ml_table:
             green_ml = row[0]
         green_potions = green_ml // 100
         if green_potions > 0:
-            if green_potions > 50 - total_potions: green_potions = 50 - total_potions
+            if green_potions > potion_limit - total_potions: green_potions = potion_limit - total_potions
             result.append(
                 {
                     "potion_type": [0, 100, 0, 0],
@@ -64,7 +66,7 @@ def get_bottle_plan():
             red_ml = row[0]
         red_potions = red_ml // 100
         if red_potions > 0:
-            if red_potions > 50 - total_potions: red_potions = 50 - total_potions
+            if red_potions > potion_limit - total_potions: red_potions = potion_limit - total_potions
             result.append(
                 {
                     "potion_type": [100, 0, 0, 0],
@@ -76,7 +78,7 @@ def get_bottle_plan():
             blue_ml = row[0]
         blue_potions = blue_ml // 100
         if blue_potions > 0:
-            if blue_potions > 50 - total_potions: blue_potions = 50 - total_potions
+            if blue_potions > potion_limit - total_potions: blue_potions = potion_limit - total_potions
             result.append(
                 {
                     "potion_type": [0, 0, 100, 0],
