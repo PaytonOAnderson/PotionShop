@@ -6,11 +6,11 @@ import sqlalchemy
 from src import database as db
 from src.api.inventory import INVENTORY
 
-CARTS = "carts"
-# CARTS = "testing_carts"
+# CARTS = "carts"
+CARTS = "testing_carts"
 
-COSTOMER = 'customer'
-# COSTOMER = 'testing_customer'
+# COSTOMER = 'customer'
+COSTOMER = 'testing_customer'
 
 
 router = APIRouter(
