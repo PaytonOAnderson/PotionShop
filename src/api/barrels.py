@@ -43,6 +43,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel], order_id: int):
 @router.post("/plan")
 def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
+    #TODO make sure ml purchased is within limits
     with db.engine.begin() as connection:
         result = []
         print(wholesale_catalog)
@@ -50,10 +51,35 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         for row in gold_table:
             gold = row[0]
         print(f'result {gold}')
-        green_potions_table = connection.execute(sqlalchemy.text(f"SELECT num_green_potions FROM {INVENTORY}"))
-        for row in green_potions_table:
-            green_potions = row[0]
-        # currently buying one small barrel of a random color if I can afford it
+        if gold >= 400: 
+            random_num = 1
+            if gold >= 500: random_num = random.randint(1, 2)
+            if gold >= 600: random_num = random.randint(1, 3)
+            for barrel in wholesale_catalog:
+                qty = gold // barrel.price
+                if qty > barrel.quantity: qty = barrel.quantity
+                if random_num == 1 and barrel.sku == "LARGE_GREEN_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "LARGE_GREEN_BARREL",
+                            "quantity": qty
+                        }
+                    ]
+                if random_num == 2 and barrel.sku == "LARGE_RED_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "LARGE_RED_BARREL",
+                            "quantity": qty
+                        }
+                    ]
+                if random_num == 3 and barrel.sku == "LARGE_BLUE_BARREL" and gold >= barrel.price:
+                    return [
+                        {
+                            "sku": "LARGE_BLUE_BARREL",
+                            "quantity": qty
+                        }
+                    ]
+
         if gold >= 250:
             if gold >= 300 :
                 random_num = random.randint(1, 3)
