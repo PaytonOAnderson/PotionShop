@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from src.api import auth
 import sqlalchemy
 from src import database as db
-from db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
+from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
 
 router = APIRouter(
     prefix="/admin",

@@ -1,11 +1,11 @@
-# INVENTORY = "testing_global_inventory"
-INVENTORY = "global_inventory"
+INVENTORY = "testing_global_inventory"
+# INVENTORY = "global_inventory"
 
-CARTS = "carts"
-# CARTS = "testing_carts"
+# CARTS = "carts"
+CARTS = "testing_carts"
 
-CUSTOMER = 'customers'
-# CUSTOMER = 'testing_customers'
+# CUSTOMER = 'customers'
+CUSTOMER = 'testing_customers'
 
-ITEMS = 'items'
-# ITEMS = "testing_items"
+# ITEMS = 'items'
+ITEMS = "testing_items"
