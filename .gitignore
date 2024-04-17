@@ -4,3 +4,4 @@ venv
 __pycache__
 /.env
 info.log
+src.api.db_variables
