@@ -45,6 +45,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     #TODO make sure ml purchased is within limits
     with db.engine.begin() as connection:
+        ml_limit = 10000
+        red_ml = connection.execute(sqlalchemy.text(f"SELECT num_red_ml FROM {INVENTORY}")).fetchone()[0]
+        green_ml = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}")).fetchone()[0]
+        blue_ml = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}")).fetchone()[0]
+        dark_ml = connection.execute(sqlalchemy.text(f"SELECT num_dark_ml FROM {INVENTORY}")).fetchone()[0]
+        total_ml = red_ml + green_ml + blue_ml + dark_ml
         result = []
         print(wholesale_catalog)
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
@@ -58,54 +64,58 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             for barrel in wholesale_catalog:
                 qty = gold // barrel.price
                 if qty > barrel.quantity: qty = barrel.quantity
-                if random_num == 1 and barrel.sku == "LARGE_GREEN_BARREL" and gold >= barrel.price:
-                    return [
-                        {
-                            "sku": "LARGE_GREEN_BARREL",
-                            "quantity": qty
-                        }
-                    ]
-                if random_num == 2 and barrel.sku == "LARGE_RED_BARREL" and gold >= barrel.price:
-                    return [
-                        {
-                            "sku": "LARGE_RED_BARREL",
-                            "quantity": qty
-                        }
-                    ]
-                if random_num == 3 and barrel.sku == "LARGE_BLUE_BARREL" and gold >= barrel.price:
-                    return [
-                        {
-                            "sku": "LARGE_BLUE_BARREL",
-                            "quantity": qty
-                        }
-                    ]
+                if qty >= 1 and barrel.ml_per_barrel < ml_limit - total_ml:
+                    if random_num == 1 and barrel.sku == "LARGE_GREEN_BARREL":
+                        return [
+                            {
+                                "sku": "LARGE_GREEN_BARREL",
+                                "quantity": qty
+                            }
+                        ]
+                    if random_num == 2 and barrel.sku == "LARGE_RED_BARREL":
+                        return [
+                            {
+                                "sku": "LARGE_RED_BARREL",
+                                "quantity": qty
+                            }
+                        ]
+                    if random_num == 3 and barrel.sku == "LARGE_BLUE_BARREL":
+                        return [
+                            {
+                                "sku": "LARGE_BLUE_BARREL",
+                                "quantity": qty
+                            }
+                        ]
 
         if gold >= 250:
             if gold >= 300 :
                 random_num = random.randint(1, 3)
             else: random_num = random.randint(1, 2)
             for barrel in wholesale_catalog:
-                if random_num == 1 and barrel.sku == "MEDIUM_GREEN_BARREL" and gold >= barrel.price:
-                    return [
-                        {
-                            "sku": "MEDIUM_GREEN_BARREL",
-                            "quantity": 1
-                        }
-                    ]
-                if random_num == 2 and barrel.sku == "MEDIUM_RED_BARREL" and gold >= barrel.price:
-                    return [
-                        {
-                            "sku": "MEDIUM_RED_BARREL",
-                            "quantity": 1
-                        }
-                    ]
-                if random_num == 3 and barrel.sku == "MEDIUM_BLUE_BARREL" and gold >= barrel.price:
-                    return [
-                        {
-                            "sku": "MEDIUM_BLUE_BARREL",
-                            "quantity": 1
-                        }
-                    ]
+                qty = gold // barrel.price
+                if qty > barrel.quantity: qty = barrel.quantity
+                if qty >= 1 and barrel.ml_per_barrel < ml_limit - total_ml:
+                    if random_num == 1 and barrel.sku == "MEDIUM_GREEN_BARREL":
+                        return [
+                            {
+                                "sku": "MEDIUM_GREEN_BARREL",
+                                "quantity": 1
+                            }
+                        ]
+                    if random_num == 2 and barrel.sku == "MEDIUM_RED_BARREL":
+                        return [
+                            {
+                                "sku": "MEDIUM_RED_BARREL",
+                                "quantity": 1
+                            }
+                        ]
+                    if random_num == 3 and barrel.sku == "MEDIUM_BLUE_BARREL":
+                        return [
+                            {
+                                "sku": "MEDIUM_BLUE_BARREL",
+                                "quantity": 1
+                            }
+                        ]
         if gold >= 100:
             random_num = random.randint(1, 2)
             if gold >= 120: random_num = random.randint(1, 3)
