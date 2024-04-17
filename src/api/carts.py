@@ -9,8 +9,8 @@ from src.api.inventory import INVENTORY
 # CARTS = "carts"
 CARTS = "testing_carts"
 
-# CUSTOMER = 'customer'
-CUSTOMER = 'testing_customer'
+CUSTOMER = 'customer'
+# CUSTOMER = 'testing_customer'
 
 
 router = APIRouter(
