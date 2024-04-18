@@ -94,6 +94,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             if gold >= 300 :
                 random_num = random.randint(1, 3)
             else: random_num = random.randint(1, 2)
+            if green_ml < red_ml and green_ml < blue_ml:
+                random_num = 1
+            elif red_ml < green_ml and red_ml < blue_ml:
+                random_num = 2
+            elif blue_ml < green_ml and blue_ml < red_ml:
+                random_num = 3
             for barrel in wholesale_catalog:
                 qty = gold // barrel.price
                 if qty > barrel.quantity: qty = barrel.quantity
@@ -122,6 +128,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         if gold >= 100:
             random_num = random.randint(1, 2)
             if gold >= 120: random_num = random.randint(1, 3)
+            if green_ml < red_ml and green_ml < blue_ml:
+                random_num = 1
+            elif red_ml < green_ml and red_ml < blue_ml:
+                random_num = 2
+            elif blue_ml < green_ml and blue_ml < red_ml:
+                random_num = 3
             for barrel in wholesale_catalog:
                 qty = gold // barrel.price
                 if qty > barrel.quantity: qty = barrel.quantity
