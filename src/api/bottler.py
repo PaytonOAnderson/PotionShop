@@ -85,10 +85,11 @@ def get_bottle_plan():
                 min_qty = min(min_qty, dark_ml // item.dark_qty)
                 print(f"4 : {min_qty}")
             if min_qty != float('inf'):
-                print(f"qty to bottle: {min_qty}")
                 max_qty = potion_limit // item_count
                 max_qty -= item.qty
                 qty = min(max_qty, min_qty, potion_limit - total_potions)
+                
+                print(f"qty to bottle: {qty}")
                 if qty > 0:
                     result.append(
                         {
@@ -101,6 +102,7 @@ def get_bottle_plan():
                     green_ml -= item.green_qty * qty
                     blue_ml -= item.blue_qty * qty
                     dark_ml -= item.dark_qty * qty
+        print(f"bottler result: {result}")
         return result
         
 
