@@ -74,6 +74,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 barrel_type = 3
             # elif min(red_ml, green_ml, blue_ml, dark_ml) == dark_ml:
             #     barrel_type = 4
+            #TODO create and implement better barrel buying logic
+            # buy up to 1/4 of max ml for each ml type
+            # or buy the percentage of ml in all items being bought/sold
             for barrel in wholesale_catalog:
                 qty = gold // barrel.price
                 if qty > barrel.quantity: qty = barrel.quantity
