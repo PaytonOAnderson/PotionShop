@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from src.api import auth
 import sqlalchemy
 from src import database as db
-from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
+from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS, CAPACITY
 import random
 
 router = APIRouter(
@@ -48,7 +48,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     #TODO make sure ml purchased is within limits
     with db.engine.begin() as connection:
-        ml_limit = 10000
+        ml_limit = connection.execute(sqlalchemy.text(f"SELECT ml_capacity FROM {CAPACITY}")).fetchone()[0]
         red_ml = connection.execute(sqlalchemy.text(f"SELECT num_red_ml FROM {INVENTORY}")).fetchone()[0]
         green_ml = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}")).fetchone()[0]
         blue_ml = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}")).fetchone()[0]
@@ -60,6 +60,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         for row in gold_table:
             gold = row[0]
         print(f'result {gold}')
+        if ml_limit // total_ml <= 4:
+            return result
         if gold >= 400: 
             random_num = 1
             if gold >= 500: random_num = random.randint(1, 2)
