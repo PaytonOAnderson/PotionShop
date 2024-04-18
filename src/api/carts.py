@@ -91,9 +91,8 @@ def post_visits(visit_id: int, customers: list[Customer]):
 def create_cart(new_cart: Customer):
     """ """
     with db.engine.begin() as connection:
-        count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {CARTS}")).fetchone()[0]
-        connection.execute(sqlalchemy.text(f"INSERT INTO {CUSTOMER} (id, customer_name, character_class, level) VALUES ({count + 1}, '{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level})"))
-        return {"cart_id": count + 1}
+        connection.execute(sqlalchemy.text(f"INSERT INTO {CUSTOMER} (customer_name, character_class, level) VALUES ('{new_cart.customer_name}', '{new_cart.character_class}', {new_cart.level}) RETURNING id"))
+        return {"cart_id": id}
 
 
 class CartItem(BaseModel):
