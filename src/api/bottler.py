@@ -89,18 +89,18 @@ def get_bottle_plan():
                 max_qty = potion_limit // item_count
                 max_qty -= item.qty
                 qty = min(max_qty, min_qty, potion_limit - total_potions)
-                qty = max(qty, 0)
-                result.append(
-                    {
-                        "potion_type": [item.red_qty, item.green_qty, item.blue_qty, item.dark_qty],
-                        "quantity": qty,
-                    }
-                )
-                total_potions += qty
-                red_ml -= item.red_qty * qty
-                green_ml -= item.green_qty * qty
-                blue_ml -= item.blue_qty * qty
-                dark_ml -= item.dark_qty * qty
+                if qty > 0:
+                    result.append(
+                        {
+                            "potion_type": [item.red_qty, item.green_qty, item.blue_qty, item.dark_qty],
+                            "quantity": qty,
+                        }
+                    )
+                    total_potions += qty
+                    red_ml -= item.red_qty * qty
+                    green_ml -= item.green_qty * qty
+                    blue_ml -= item.blue_qty * qty
+                    dark_ml -= item.dark_qty * qty
         return result
         
 
