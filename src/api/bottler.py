@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from src.api import auth
 import sqlalchemy
 from src import database as db
-from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
+from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS, CAPACITY
 
 
 
@@ -48,44 +48,57 @@ def get_bottle_plan():
     with db.engine.begin() as connection:
         total_potions = connection.execute(sqlalchemy.text(f"SELECT num_potions FROM {INVENTORY}")).fetchone()[0]
         #TODO check what the limit is and update it
-        potion_limit = 50
+        #TODO bottle potions up to potion_limit//types of potion
+        potion_limit = connection.execute(sqlalchemy.text(f"SELECT potion_capacity FROM {CAPACITY}")).fetchone()[0]
         result = []
-        green_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}"))
-        for row in green_ml_table:
-            green_ml = row[0]
+        items = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS}"))
+        item_count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {ITEMS}")).fetchone()[0]
+        print(f"item count {item_count}")
+        
+
+        green_ml = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}")).fetchone()[0]
         green_potions = green_ml // 100
-        if green_potions > 0:
-            if green_potions > potion_limit - total_potions: green_potions = potion_limit - total_potions
-            result.append(
-                {
-                    "potion_type": [0, 100, 0, 0],
-                    "quantity": green_potions,
-                }
-            )
-        red_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_red_ml FROM {INVENTORY}"))
-        for row in red_ml_table:
-            red_ml = row[0]
+        
+        red_ml = connection.execute(sqlalchemy.text(f"SELECT num_red_ml FROM {INVENTORY}")).fetchone()[0]
         red_potions = red_ml // 100
-        if red_potions > 0:
-            if red_potions > potion_limit - total_potions: red_potions = potion_limit - total_potions
-            result.append(
-                {
-                    "potion_type": [100, 0, 0, 0],
-                    "quantity": red_potions,
-                }
-            )
-        blue_ml_table = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}"))
-        for row in blue_ml_table:
-            blue_ml = row[0]
+
+        
+        blue_ml = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}")).fetchone()[0]
         blue_potions = blue_ml // 100
-        if blue_potions > 0:
-            if blue_potions > potion_limit - total_potions: blue_potions = potion_limit - total_potions
-            result.append(
-                {
-                    "potion_type": [0, 0, 100, 0],
-                    "quantity": blue_potions,
-                }
-            )
+
+        dark_ml = connection.execute(sqlalchemy.text(f"SELECT num_dark_ml FROM {INVENTORY}")).fetchone()[0]
+        dark_potions = blue_ml // 100
+
+        for item in items:
+            qty = 0
+            min_qty = float('inf')  # Initialize min_qty to positive infinity
+            if red_ml != 0 and item.red_qty != 0:
+                min_qty = min(min_qty, red_ml // item.red_qty)
+                print(f"1 : {min_qty}")
+            if green_ml != 0 and item.green_qty != 0:
+                min_qty = min(min_qty, green_ml // item.green_qty)
+                print(f"2 : {min_qty}")
+            if blue_ml != 0 and item.blue_qty != 0:
+                min_qty = min(min_qty, blue_ml // item.blue_qty)
+                print(f"3 : {min_qty}")
+            if dark_ml != 0 and item.dark_qty != 0:
+                min_qty = min(min_qty, dark_ml // item.dark_qty)
+                print(f"4 : {min_qty}")
+            if min_qty != float('inf'):
+                print(f"qty to bottle: {min_qty}")
+                max_qty = potion_limit // item_count
+                qty = min(max_qty, min_qty, potion_limit - total_potions)
+                result.append(
+                    {
+                        "potion_type": [item.red_qty, item.green_qty, item.blue_qty, item.dark_qty],
+                        "quantity": qty,
+                    }
+                )
+                total_potions += qty
+                red_ml -= item.red_qty * qty
+                green_ml -= item.green_qty * qty
+                blue_ml -= item.blue_qty * qty
+                dark_ml -= item.dark_qty * qty
         return result
         
 
