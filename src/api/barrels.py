@@ -59,7 +59,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
             gold = row[0]
-        print(f'result {gold}')
+        print(f'gold {gold}')
         # if ml_limit // total_ml <= 4:
         #     return result
         if gold >= 400: 
@@ -90,6 +90,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             }
                         )
                         green_ml += barrel.ml_per_barrel * qty
+                        print("test1")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
                     if barrel_type == 2 and barrel.sku == "LARGE_RED_BARREL":
                         result.append(
                             {
@@ -98,6 +101,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             }
                         )
                         red_ml += barrel.ml_per_barrel * qty
+                        print("test2")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
                     if barrel_type == 3 and barrel.sku == "LARGE_BLUE_BARREL":
                         result.append(
                             {
@@ -106,6 +112,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             }
                         )
                         blue_ml += barrel.ml_per_barrel * qty
+                        print("test3")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
 
         if gold >= 250:
             if gold >= 300 :
@@ -131,6 +140,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                 "quantity": qty
                             }
                         )
+                        print("test4")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
                         green_ml += barrel.ml_per_barrel * qty
                     if barrel_type == 2 and barrel.sku == "MEDIUM_RED_BARREL":
                         result.append(
@@ -140,6 +152,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             }
                         )
                         red_ml += barrel.ml_per_barrel * qty
+                        print("test5")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
                     if barrel_type == 3 and barrel.sku == "MEDIUM_BLUE_BARREL":
                         result.append(
                             {
@@ -147,6 +162,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                 "quantity": qty
                             }
                         )
+                        print("test6")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
                         blue_ml += barrel.ml_per_barrel * qty
         if gold >= 100:
             barrel_type = random.randint(1, 2)
@@ -171,6 +189,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                 "quantity": qty
                             }
                         )
+                        print("test7")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
                         green_ml += barrel.ml_per_barrel * qty
                     if barrel_type == 2 and barrel.sku == "SMALL_RED_BARREL":
                         result.append(
@@ -179,6 +200,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                 "quantity": qty
                             }
                         )
+                        print("test8")
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
                         red_ml += barrel.ml_per_barrel * qty
                     if barrel_type == 3 and barrel.sku == "SMALL_BLUE_BARREL":
                         result.append(
@@ -187,7 +211,11 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                 "quantity": qty
                             }
                         )
+                        print("test9")
                         blue_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+    print(f'result: {result}')
     return result
         
 
