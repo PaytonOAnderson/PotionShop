@@ -51,23 +51,19 @@ def get_bottle_plan():
         #TODO bottle potions up to potion_limit//types of potion
         potion_limit = connection.execute(sqlalchemy.text(f"SELECT potion_capacity FROM {CAPACITY}")).fetchone()[0]
         result = []
-        items = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS}"))
-        item_count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {ITEMS}")).fetchone()[0]
+        items = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE sku != 'TEAL_POTION_0'"))
+        print(f"items {items}")
+        item_count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {ITEMS} WHERE sku != 'TEAL_POTION_0'")).fetchone()[0]
         print(f"item count {item_count}")
         
 
         green_ml = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}")).fetchone()[0]
-        green_potions = green_ml // 100
         
         red_ml = connection.execute(sqlalchemy.text(f"SELECT num_red_ml FROM {INVENTORY}")).fetchone()[0]
-        red_potions = red_ml // 100
 
-        
         blue_ml = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}")).fetchone()[0]
-        blue_potions = blue_ml // 100
 
         dark_ml = connection.execute(sqlalchemy.text(f"SELECT num_dark_ml FROM {INVENTORY}")).fetchone()[0]
-        dark_potions = blue_ml // 100
 
         for item in items:
             qty = 0
