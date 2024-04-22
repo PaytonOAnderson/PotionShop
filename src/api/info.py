@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from src.api import auth
 import sqlalchemy
 from src import database as db
-from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS, TIME
+from src.api.db_variables import CARTS, CUSTOMER, INVENTORY, ITEMS
 
 router = APIRouter(
     prefix="/info",
@@ -22,6 +22,6 @@ def post_time(timestamp: Timestamp):
     """
     #TODO add current time to a databases to attack to transactions to see if date/time affects purchases
     with db.engine.begin() as connection:
-        connection.execute(sqlalchemy.text(f"INSERT INTO {TIME} (day, hour) VALUES ('{timestamp.day}', {timestamp.hour})"))
+        connection.execute(sqlalchemy.text(f"INSERT INTO time (day, hour) VALUES ('{timestamp.day}', {timestamp.hour})"))
     return "OK"
 
