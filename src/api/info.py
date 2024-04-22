@@ -22,6 +22,6 @@ def post_time(timestamp: Timestamp):
     """
     #TODO add current time to a databases to attack to transactions to see if date/time affects purchases
     with db.engine.begin() as connection:
-        connection.execute(sqlalchemy.text(f"INSERT INTO {TIME} (day, hour) VALUES ('{timestamp.day}', {timestamp.hour}")).fetchone()[0]
+        connection.execute(sqlalchemy.text(f"INSERT INTO {TIME} (day, hour) VALUES ('{timestamp.day}', {timestamp.hour})"))
     return "OK"
 
