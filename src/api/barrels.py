@@ -30,15 +30,23 @@ def post_deliver_barrels(barrels_delivered: list[Barrel], order_id: int):
             if barrels.potion_type == [0, 1, 0, 0]:
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.quantity * barrels.price}"))
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_ml = num_green_ml + {barrels.quantity * barrels.ml_per_barrel}"))
+                transaction_id = connection.execute(sqlalchemy.text("INSERT INTO account_transactions (description) VALUES ('Me paying Barrel salesperson :price for :qty green barrels with :ml mls') RETURNING id"), [{"price" : barrels.price, "qty" : barrels.quantity, "ml" : barrels.ml_per_barrel}]).first()[0]
+                connection.execute(sqlalchemy.text("INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, transaction_type) VALUES (:my_account_id, :transaction_id, :gold, 'gold'), (:my_account_id, :transaction_id, :ml, 'green_ml')"), [{"my_account_id" : 1, "transaction_id" : transaction_id, "gold" : - (barrels.quantity * barrels.price), "ml" : (barrels.quantity * barrels.ml_per_barrel)}])
             elif barrels.potion_type == [1, 0, 0, 0]:
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.quantity * barrels.price}"))
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_ml = num_red_ml + {barrels.quantity * barrels.ml_per_barrel}"))
+                transaction_id = connection.execute(sqlalchemy.text("INSERT INTO account_transactions (description) VALUES ('Me paying Barrel salesperson :price for :qty red barrels with :ml mls') RETURNING id"), [{"price" : barrels.price, "qty" : barrels.quantity, "ml" : barrels.ml_per_barrel}]).first()[0]
+                connection.execute(sqlalchemy.text("INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, transaction_type) VALUES (:my_account_id, :transaction_id, :gold, 'gold'), (:my_account_id, :transaction_id, :ml, 'red_ml')"), [{"my_account_id" : 1, "transaction_id" : transaction_id, "gold" : - (barrels.quantity * barrels.price), "ml" : (barrels.quantity * barrels.ml_per_barrel)}])
             elif barrels.potion_type == [0, 0, 1, 0]:
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.quantity * barrels.price}"))
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_ml = num_blue_ml + {barrels.quantity * barrels.ml_per_barrel}"))
+                transaction_id = connection.execute(sqlalchemy.text("INSERT INTO account_transactions (description) VALUES ('Me paying Barrel salesperson :price for :qty blue barrels with :ml mls') RETURNING id"), [{"price" : barrels.price, "qty" : barrels.quantity, "ml" : barrels.ml_per_barrel}]).first()[0]
+                connection.execute(sqlalchemy.text("INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, transaction_type) VALUES (:my_account_id, :transaction_id, :gold, 'gold'), (:my_account_id, :transaction_id, :ml, 'blue_ml')"), [{"my_account_id" : 1, "transaction_id" : transaction_id, "gold" : - (barrels.quantity * barrels.price), "ml" : (barrels.quantity * barrels.ml_per_barrel)}])
             elif barrels.potion_type == [0, 0, 0, 1]:
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {barrels.quantity * barrels.price}"))
                 connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_dark_ml = num_dark_ml + {barrels.quantity * barrels.ml_per_barrel}"))
+                transaction_id = connection.execute(sqlalchemy.text("INSERT INTO account_transactions (description) VALUES ('Me paying Barrel salesperson :price for :qty dark barrels with :ml mls') RETURNING id"), [{"price" : barrels.price, "qty" : barrels.quantity, "ml" : barrels.ml_per_barrel}]).first()[0]
+                connection.execute(sqlalchemy.text("INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, transaction_type) VALUES (:my_account_id, :transaction_id, :gold, 'gold'), (:my_account_id, :transaction_id, :ml, 'dark_ml')"), [{"my_account_id" : 1, "transaction_id" : transaction_id, "gold" : - (barrels.quantity * barrels.price), "ml" : (barrels.quantity * barrels.ml_per_barrel)}])
             #TODO insert update statement that is general here
 
     return "OK"
