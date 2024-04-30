@@ -11,6 +11,7 @@ def get_catalog():
     """
     Each unique item combination must have only a single price.
     """
+    #TODO determine catalog by the date/time if that correlates to character class visits
     with db.engine.begin() as connection:
         result = []
         potions_avaliable = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE  qty > 0"))

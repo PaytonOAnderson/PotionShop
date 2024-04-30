@@ -25,12 +25,9 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory], order_id: int
     with db.engine.begin() as connection:
         for potion in potions_delivered:
             # update item table to include potion created
-            connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_red_ml = num_red_ml - {potion.potion_type[0] * potion.quantity}"))
-            connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_green_ml = num_green_ml - {potion.potion_type[1] * potion.quantity}"))
-            connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_blue_ml = num_blue_ml - {potion.potion_type[2] * potion.quantity}"))
-            connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_dark_ml = num_dark_ml - {potion.potion_type[3] * potion.quantity}"))
-            connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET num_potions = num_potions + {potion.quantity}"))
-            connection.execute(sqlalchemy.text(f"UPDATE {ITEMS} SET qty = qty + {potion.quantity} WHERE red_qty = {potion.potion_type[0]} AND green_qty = {potion.potion_type[1]} AND blue_qty = {potion.potion_type[2]} AND dark_qty = {potion.potion_type[3]}"))
+            connection.execute(sqlalchemy.text("UPDATE testing_global_inventory SET num_red_ml = num_red_ml - :red_qty * :qty, num_green_ml = num_green_ml - :green_qty * :qty, num_blue_ml = num_blue_ml - :blue_qty * :qty, num_dark_ml = num_dark_ml - :dark_qty * :qty, num_potions = num_potions + :qty"),
+                               [{"red_qty" :potion.potion_type[0], "green_qty" : potion.potion_type[1], "blue_qty" : potion.potion_type[2], "dark_qty" : potion.potion_type[3], "qty" : potion.quantity}])
+            connection.execute(sqlalchemy.text("UPDATE testing_items SET qty = qty + :qty WHERE red_qty = :red_qty AND green_qty = :green_qty AND blue_qty = :blue_qty AND dark_qty = :dark_qty") ,[{"qty" : potion.quantity, "red_qty" : potion.potion_type[0], "green_qty" : potion.potion_type[1], "blue_qty" : potion.potion_type[2], "dark_qty" : potion.potion_type[3]}])
     return "OK"
 
 @router.post("/plan")

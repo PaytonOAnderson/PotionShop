@@ -116,7 +116,6 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
     #TODO update database based on what was sold
     with db.engine.begin() as connection:
-        print(f"payment str: {cart_checkout.payment}")
         potions_bought = 0
         gold_paid = 0
         cart_items = connection.execute(sqlalchemy.text(f"SELECT * FROM {CARTS} WHERE id = {cart_id}"))
