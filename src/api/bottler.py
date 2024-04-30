@@ -25,9 +25,13 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory], order_id: int
     with db.engine.begin() as connection:
         for potion in potions_delivered:
             # update item table to include potion created
-            connection.execute(sqlalchemy.text("UPDATE testing_global_inventory SET num_red_ml = num_red_ml - :red_qty * :qty, num_green_ml = num_green_ml - :green_qty * :qty, num_blue_ml = num_blue_ml - :blue_qty * :qty, num_dark_ml = num_dark_ml - :dark_qty * :qty, num_potions = num_potions + :qty"),
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml - :red_qty * :qty, num_green_ml = num_green_ml - :green_qty * :qty, num_blue_ml = num_blue_ml - :blue_qty * :qty, num_dark_ml = num_dark_ml - :dark_qty * :qty, num_potions = num_potions + :qty"),
                                [{"red_qty" :potion.potion_type[0], "green_qty" : potion.potion_type[1], "blue_qty" : potion.potion_type[2], "dark_qty" : potion.potion_type[3], "qty" : potion.quantity}])
-            connection.execute(sqlalchemy.text("UPDATE testing_items SET qty = qty + :qty WHERE red_qty = :red_qty AND green_qty = :green_qty AND blue_qty = :blue_qty AND dark_qty = :dark_qty") ,[{"qty" : potion.quantity, "red_qty" : potion.potion_type[0], "green_qty" : potion.potion_type[1], "blue_qty" : potion.potion_type[2], "dark_qty" : potion.potion_type[3]}])
+            connection.execute(sqlalchemy.text("UPDATE items SET qty = qty + :qty WHERE red_qty = :red_qty AND green_qty = :green_qty AND blue_qty = :blue_qty AND dark_qty = :dark_qty") ,[{"qty" : potion.quantity, "red_qty" : potion.potion_type[0], "green_qty" : potion.potion_type[1], "blue_qty" : potion.potion_type[2], "dark_qty" : potion.potion_type[3]}])
+            transaction_id = connection.execute(sqlalchemy.text("INSERT INTO account_transactions (description) VALUES ('Me recieving :qty potions with :red_ml red_mls :green_ml green_mls :blue_ml blue mls :dark_ml dark mls') RETURNING id"), [{"qty" : potion.quantity, "red_ml" : potion.potion_type[0], "green_ml" : potion.potion_type[1], "blue_ml" : potion.potion_type[2], "dark_ml" : potion.potion_type[3]}]).first()[0]
+            connection.execute(sqlalchemy.text("INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, transaction_type) VALUES (:my_account_id, :transaction_id, :red_ml, 'red_ml'), (:my_account_id, :transaction_id, :green_ml, 'green_ml'), (:my_account_id, :transaction_id, :blue_ml, 'blue_ml'), (:my_account_id, :transaction_id, :dark_ml, 'dark_ml')"), [{"my_account_id" : 1, "transaction_id" : transaction_id, "qty" : potion.quantity, "red_ml" : potion.potion_type[0], "green_ml" : potion.potion_type[1], "blue_ml" : potion.potion_type[2], "dark_ml" : potion.potion_type[3]}])
+
+
     return "OK"
 
 @router.post("/plan")
