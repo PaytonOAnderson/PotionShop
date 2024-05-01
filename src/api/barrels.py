@@ -58,7 +58,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     #TODO make sure ml purchased is within limits
     with db.engine.begin() as connection:
         ml_limit = connection.execute(sqlalchemy.text(f"SELECT ml_capacity FROM {CAPACITY}")).fetchone()[0]
-        result =  connection.execute(sqlalchemy.text(f"num_red_ml, num_green_ml, num_blue_ml, num_dark_ml FROM {INVENTORY}")).fetchone()
+        result =  connection.execute(sqlalchemy.text(f"SELECT num_red_ml, num_green_ml, num_blue_ml, num_dark_ml FROM {INVENTORY}")).fetchone()
         red_ml = result[0]
         green_ml = result[1]
         blue_ml = result[2]
