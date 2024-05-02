@@ -120,6 +120,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         gold_paid = 0
         cart_items = connection.execute(sqlalchemy.text(f"SELECT * FROM {CARTS} WHERE id = {cart_id}"))
         for item in cart_items:
+            potion = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE id = {item.item_id}")).fetchone()
+            print(f"potion: {potion}")
             item_qty = item.item_qty
             item_id = item.item_id
             cost = connection.execute(sqlalchemy.text(f"SELECT cost FROM {ITEMS} WHERE id = {item_id}")).fetchone()[0]
@@ -128,5 +130,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET gold = gold + {cost * item_qty}"))
             connection.execute(sqlalchemy.text(f"UPDATE {ITEMS} SET qty = qty - {item_qty} WHERE id = {item_id}"))
             connection.execute(sqlalchemy.text(f"UPDATE {INVENTORY} SET num_potions = num_potions - {item_qty}"))
+            transaction_id = connection.execute(sqlalchemy.text("INSERT INTO account_transactions (description) VALUES ('Me selling :qty potions with :red_ml red_mls :green_ml green_mls :blue_ml blue mls :dark_ml dark mls') RETURNING id"), [{"qty" : item_qty, "red_ml" : potion.red_qty, "green_ml" : potion.green_qty, "blue_ml" : potion.blue_qty, "dark_ml" : potion.dark_qty}]).first()[0]
+            connection.execute(sqlalchemy.text("INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, transaction_type) VALUES (:my_account_id, :transaction_id, :gold, 'gold'), (:my_account_id, :transaction_id, :potions, 'potion')"), [{"my_account_id" : 1, "transaction_id" : transaction_id, "gold" : (item_qty * potion.cost), "potions" : - item_qty}])
             print(f"item_id: {item_id}, item qty: {item_qty}")
         return {"total_potions_bought": potions_bought, "total_gold_paid": gold_paid}

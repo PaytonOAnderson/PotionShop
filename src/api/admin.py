@@ -27,6 +27,11 @@ def reset():
         connection.execute(sqlalchemy.text(f'''UPDATE {CAPACITY} SET potion_capacity = 50,
                                             ml_capacity = 10000'''))
         connection.execute(sqlalchemy.text(f"UPDATE {ITEMS} SET qty = 0"))
+        connection.execute(sqlalchemy.text("DELETE FROM account_ledger_entries"))
+        connection.execute(sqlalchemy.text("DELETE FROM account_transactions"))
+        connection.execute(sqlalchemy.text(f'''UPDATE accounts SET gold = 100,
+                                            ml = 0,
+                                            potions = 0'''))
         
         
     return "OK"

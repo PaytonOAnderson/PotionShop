@@ -27,7 +27,23 @@ def get_inventory():
         dark_ml = connection.execute(sqlalchemy.text(f"SELECT num_dark_ml FROM {INVENTORY}")).fetchone()[0]
         total_ml = red_ml + green_ml + blue_ml + dark_ml
 
-        print(f'potions: {potions}\n ml: {total_ml}\ngold: {gold}')
+        my_account = connection.execute(sqlalchemy.text("SELECT gold, ml, potions FROM accounts WHERE name = 'me' ")).fetchone()
+        gold = connection.execute(sqlalchemy.text('''SELECT COALESCE(SUM(change), 0) AS balance
+                                                FROM account_ledger_entries
+                                                WHERE account_id = :my_account_id
+                                                AND transaction_type = 'gold' '''), [{"my_account_id" : 1}]).fetchone()[0] + my_account.gold
+        potions = connection.execute(sqlalchemy.text('''SELECT COALESCE(SUM(change), 0) AS balance
+                                                FROM account_ledger_entries
+                                                WHERE account_id = :my_account_id
+                                                AND transaction_type = 'potion' '''), [{"my_account_id" : 1}]).fetchone()[0] + my_account.potions
+        total_ml = connection.execute(sqlalchemy.text('''SELECT COALESCE(SUM(change), 0) AS balance
+                                                FROM account_ledger_entries
+                                                WHERE account_id = :my_account_id
+                                                AND transaction_type = 'red_ml'
+                                                OR transaction_type = 'green_ml'
+                                                OR transaction_type = 'blue_ml'
+                                                OR transaction_type = 'dark_ml' '''), [{"my_account_id" : 1}]).fetchone()[0] + my_account.ml
+        print(f'potions: {potions}\n ml: {my_account.ml}\ngold: {gold}')
     return {"number_of_potions": potions, "ml_in_barrels": total_ml, "gold": gold}
 
 # Gets called once a day
