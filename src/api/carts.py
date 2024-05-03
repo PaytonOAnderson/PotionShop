@@ -56,7 +56,7 @@ def search_orders(
     Your results must be paginated, the max results you can return at any
     time is 5 total line items.
     """
-
+    print(f"customer name: {customer_name}\npotion_sku: {potion_sku}\nsearch page: {search_page}\nsort col: {sort_col}\nsort order: {sort_order}: ")
     return {
         "previous": "",
         "next": "",
