@@ -88,5 +88,7 @@ def deliver_capacity_plan(capacity_purchase : CapacityPurchase, order_id: int):
         connection.execute(sqlalchemy.text(f"Update {CAPACITY} SET ml_capacity = ml_capacity + {10000 * capacity_purchase.ml_capacity}"))
         connection.execute(sqlalchemy.text(f"Update {CAPACITY} SET potion_capacity = potion_capacity + {50 * capacity_purchase.potion_capacity}"))
         connection.execute(sqlalchemy.text(f"Update {INVENTORY} SET gold = gold - {1000 * (capacity_purchase.ml_capacity + capacity_purchase.potion_capacity)}"))
+        transaction_id = connection.execute(sqlalchemy.text("INSERT INTO account_transactions (description) VALUES ('Me buying :ml_qty ml capacity and :potion_qty potion capacity for :gold gold') RETURNING id"), [{"ml_qty" : 10000 * capacity_purchase.ml_capacity , "potion_qty" : 50 * capacity_purchase.potion_capacity , "gold" : 1000 * (capacity_purchase.ml_capacity + capacity_purchase.potion_capacity)}]).first()[0]
+        connection.execute(sqlalchemy.text("INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, transaction_type) VALUES (:my_account_id, :transaction_id, :gold, 'gold'), (:my_account_id, :transaction_id, :potion_qty, 'potion_capacity'), (:my_account_id, :transaction_id, :ml_qty, 'ml_capacity')"), [{"my_account_id" : 1, "transaction_id" : transaction_id, "ml_qty" : 10000 * capacity_purchase.ml_capacity , "potion_qty" : 50 * capacity_purchase.potion_capacity , "gold" : -1000 * (capacity_purchase.ml_capacity + capacity_purchase.potion_capacity)}])
 
     return "OK"
