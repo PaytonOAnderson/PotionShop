@@ -83,7 +83,8 @@ def get_bottle_plan():
                 min_qty = min(min_qty, dark_ml // item.dark_qty)
                 # print(f"4 : {min_qty}")
             if min_qty != float('inf'):
-                max_qty = potion_limit // item_count
+                # max_qty = potion_limit // item_count
+                max_qty = 50
                 max_qty -= item.qty
                 qty = min(max_qty, min_qty, potion_limit - total_potions)
                 # print(f"max: {max_qty} min: {min_qty} limit - total = {potion_limit - total_potions}, {potion_limit}, {total_potions}")
