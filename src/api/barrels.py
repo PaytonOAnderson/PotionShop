@@ -94,8 +94,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     total_ml = red_ml + green_ml + blue_ml + dark_ml
                     qty = gold // barrel.price
                     qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
-                    if qty > (ml_limit // barrel.ml_per_barrel)/2:
-                        qty = (ml_limit // barrel.ml_per_barrel)/2
+                    if qty > (ml_limit // barrel.ml_per_barrel)//2:
+                        qty = (ml_limit // barrel.ml_per_barrel)//2
                     else: loop = False
                     if qty >= 1:
                         if barrel_type == 1 and barrel.sku == "LARGE_GREEN_BARREL":
@@ -158,8 +158,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     total_ml = red_ml + green_ml + blue_ml + dark_ml
                     qty = gold // barrel.price
                     qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
-                    if qty > (ml_limit // barrel.ml_per_barrel)/2:
-                        qty = (ml_limit // barrel.ml_per_barrel)/2
+                    if qty > (ml_limit // barrel.ml_per_barrel)//2:
+                        qty = (ml_limit // barrel.ml_per_barrel)//2
                     else: loop = False
                     if qty >= 1:
                         if barrel_type == 1 and barrel.sku == "MEDIUM_GREEN_BARREL":
@@ -220,8 +220,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     total_ml = red_ml + green_ml + blue_ml + dark_ml
                     qty = gold // barrel.price
                     qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
-                    if qty > (ml_limit // barrel.ml_per_barrel)/2:
-                        qty = (ml_limit // barrel.ml_per_barrel)/2
+                    if qty > (ml_limit // barrel.ml_per_barrel)//2:
+                        qty = (ml_limit // barrel.ml_per_barrel)//2
                     else: loop = False
                     if qty >= 1 and barrel.ml_per_barrel * qty < ml_limit - total_ml:
                         if barrel_type == 1 and barrel.sku == "SMALL_GREEN_BARREL":
