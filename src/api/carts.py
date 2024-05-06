@@ -57,6 +57,15 @@ def search_orders(
     time is 5 total line items.
     """
     print(f"customer name: {customer_name}\npotion_sku: {potion_sku}\nsearch page: {search_page}\nsort col: {sort_col}\nsort order: {sort_order}: ")
+    with db.engine.begin() as connection:
+        customers = connection.execute(sqlalchemy.text('''
+            SELECT customer_name, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+            FROM carts
+            join customers on carts.character_id = customers.id
+            join items on carts.item_id = items.id
+            WHERE customer_name ILIKE ':customer%'
+            Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+        print(customers)
     return {
         "previous": "",
         "next": "",
