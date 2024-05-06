@@ -31,8 +31,8 @@ def reset():
         connection.execute(sqlalchemy.text("DELETE FROM account_transactions"))
         connection.execute(sqlalchemy.text(f'''UPDATE accounts SET gold = 100,
                                             ml = 0,
-                                            potions = 0
-                                            potion_capacity = 50
+                                            potions = 0,
+                                            potion_capacity = 50,
                                             ml_capacity = 10000'''))
         
         
