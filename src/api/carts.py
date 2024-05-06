@@ -63,7 +63,8 @@ def search_orders(
             FROM carts
             join customers on carts.character_id = customers.id
             join items on carts.item_id = items.id
-            WHERE customer_name ILIKE ':customer%'
+            WHERE customer_name ILIKE ':customer''%'
+            ORDER BY :order
             Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
         print(customers)
     return {
