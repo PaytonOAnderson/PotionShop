@@ -64,8 +64,8 @@ def search_orders(
             join customers on carts.character_id = customers.id
             join items on carts.item_id = items.id
             WHERE customer_name ILIKE ':customer''%'
-            ORDER BY :order
-            Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+            ORDER BY :col_order :order
+            Limit 5 OFFSET 0'''), [{"customer" : customer_name, "col_order" : sort_col, "order" : sort_order}]).fetchall()
         print(customers)
     return {
         "previous": "",
