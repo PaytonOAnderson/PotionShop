@@ -72,142 +72,74 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         print(f'gold {gold}')
         # if ml_limit // total_ml <= 4:
         #     return result
-        loop = True
-        while loop:
-            if gold >= 400: 
+        if gold >= 400: 
+            barrel_type = 1
+            if gold >= 500: barrel_type = random.randint(1, 2)
+            if gold >= 600: barrel_type = random.randint(1, 3)
+            if min(red_ml, green_ml, blue_ml) == green_ml:
                 barrel_type = 1
-                if gold >= 500: barrel_type = random.randint(1, 2)
-                if gold >= 600: barrel_type = random.randint(1, 3)
-                if min(red_ml, green_ml, blue_ml) == green_ml:
-                    barrel_type = 1
-                elif min(red_ml, green_ml, blue_ml) == red_ml:
-                    barrel_type = 2
-                elif min(red_ml, green_ml, blue_ml) == blue_ml:
-                    barrel_type = 3
-                # elif min(red_ml, green_ml, blue_ml) == dark_ml:
-                #     barrel_type = 4
-                #TODO create and implement better barrel buying logic
-                # buy up to 1/4 of max ml for each ml type
-                # or buy the percentage of ml in all items being bought/sold
-                for barrel in wholesale_catalog:
-                    loop = True
-                    total_ml = red_ml + green_ml + blue_ml + dark_ml
-                    qty = gold // barrel.price
-                    qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
-                    if qty > (ml_limit // barrel.ml_per_barrel)//2:
-                        qty = (ml_limit // barrel.ml_per_barrel)//2
-                    else: loop = False
-                    if qty >= 1:
-                        if barrel_type == 1 and barrel.sku == "LARGE_GREEN_BARREL":
-                            result.append(
-                                {
-                                    "sku": "LARGE_GREEN_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            green_ml += barrel.ml_per_barrel * qty
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                        if barrel_type == 2 and barrel.sku == "LARGE_RED_BARREL":
-                            result.append(
-                                {
-                                    "sku": "LARGE_RED_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            red_ml += barrel.ml_per_barrel * qty
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                        if barrel_type == 3 and barrel.sku == "LARGE_BLUE_BARREL":
-                            result.append(
-                                {
-                                    "sku": "LARGE_BLUE_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            blue_ml += barrel.ml_per_barrel * qty
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                        if barrel_type == 4 and barrel.sku == "LARGE_DARK_BARREL":
-                            result.append(
-                                {
-                                    "sku": "LARGE_DARK_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            dark_ml += barrel.ml_per_barrel * qty
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
+            elif min(red_ml, green_ml, blue_ml) == red_ml:
+                barrel_type = 2
+            elif min(red_ml, green_ml, blue_ml) == blue_ml:
+                barrel_type = 3
+            # elif min(red_ml, green_ml, blue_ml) == dark_ml:
+            #     barrel_type = 4
+            #TODO create and implement better barrel buying logic
+            # buy up to 1/4 of max ml for each ml type
+            # or buy the percentage of ml in all items being bought/sold
+            for barrel in wholesale_catalog:
+                total_ml = red_ml + green_ml + blue_ml + dark_ml
+                qty = gold // barrel.price
+                qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
 
-        loop = True
-        while loop:
-            if gold >= 250:
-                if gold >= 300 :
-                    barrel_type = random.randint(1, 3)
-                else:
-                    if min(red_ml, green_ml, blue_ml) == green_ml:
-                        barrel_type = 1
-                    elif min(red_ml, green_ml, blue_ml) == red_ml:
-                        barrel_type = 2
-                    elif min(red_ml, green_ml, blue_ml) == blue_ml:
-                        barrel_type = 3
-                    # elif min(red_ml, green_ml, blue_ml) == dark_ml:
-                    #     barrel_type = 4
-                for barrel in wholesale_catalog:
-                    loop = True
-                    total_ml = red_ml + green_ml + blue_ml + dark_ml
-                    qty = gold // barrel.price
-                    qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
-                    if qty > (ml_limit // barrel.ml_per_barrel)//2:
-                        qty = (ml_limit // barrel.ml_per_barrel)//2
-                    else: loop = False
-                    if qty >= 1:
-                        if barrel_type == 1 and barrel.sku == "MEDIUM_GREEN_BARREL":
-                            result.append(
-                                {
-                                    "sku": "MEDIUM_GREEN_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                            green_ml += barrel.ml_per_barrel * qty
-                        if barrel_type == 2 and barrel.sku == "MEDIUM_RED_BARREL":
-                            result.append(
-                                {
-                                    "sku": "MEDIUM_RED_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            red_ml += barrel.ml_per_barrel * qty
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                        if barrel_type == 3 and barrel.sku == "MEDIUM_BLUE_BARREL":
-                            result.append(
-                                {
-                                    "sku": "MEDIUM_BLUE_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                            blue_ml += barrel.ml_per_barrel * qty
-                        if barrel_type == 4 and barrel.sku == "MEDIUM_DARK_BARREL":
-                            result.append(
-                                {
-                                    "sku": "MEDIUM_DARK_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                            dark_ml += barrel.ml_per_barrel * qty
-        
-        loop = True
-        while loop:
-            if gold >= 100:
-                barrel_type = random.randint(1, 2)
-                if gold >= 120: barrel_type = random.randint(1, 3)
+                if qty > (ml_limit // barrel.ml_per_barrel)//2:
+                    qty = (ml_limit // barrel.ml_per_barrel)//2
+                if qty >= 1:
+                    if barrel_type == 1 and barrel.sku == "LARGE_GREEN_BARREL":
+                        result.append(
+                            {
+                                "sku": "LARGE_GREEN_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        green_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                    if barrel_type == 2 and barrel.sku == "LARGE_RED_BARREL":
+                        result.append(
+                            {
+                                "sku": "LARGE_RED_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        red_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                    if barrel_type == 3 and barrel.sku == "LARGE_BLUE_BARREL":
+                        result.append(
+                            {
+                                "sku": "LARGE_BLUE_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        blue_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                    if barrel_type == 4 and barrel.sku == "LARGE_DARK_BARREL":
+                        result.append(
+                            {
+                                "sku": "LARGE_DARK_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        dark_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+
+        if gold >= 250:
+            if gold >= 300 :
+                barrel_type = random.randint(1, 3)
+            else:
                 if min(red_ml, green_ml, blue_ml) == green_ml:
                     barrel_type = 1
                 elif min(red_ml, green_ml, blue_ml) == red_ml:
@@ -216,54 +148,113 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     barrel_type = 3
                 # elif min(red_ml, green_ml, blue_ml) == dark_ml:
                 #     barrel_type = 4
-                for barrel in wholesale_catalog:
-                    total_ml = red_ml + green_ml + blue_ml + dark_ml
-                    qty = gold // barrel.price
-                    qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
-                    if qty > (ml_limit // barrel.ml_per_barrel)//2:
-                        qty = (ml_limit // barrel.ml_per_barrel)//2
-                    else: loop = False
-                    if qty >= 1 and barrel.ml_per_barrel * qty < ml_limit - total_ml:
-                        if barrel_type == 1 and barrel.sku == "SMALL_GREEN_BARREL":
-                            result.append(
-                                {
-                                    "sku": "SMALL_GREEN_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                            green_ml += barrel.ml_per_barrel * qty
-                        if barrel_type == 2 and barrel.sku == "SMALL_RED_BARREL":
-                            result.append(
-                                {
-                                    "sku": "SMALL_RED_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                            red_ml += barrel.ml_per_barrel * qty
-                        if barrel_type == 3 and barrel.sku == "SMALL_BLUE_BARREL":
-                            result.append(
-                                {
-                                    "sku": "SMALL_BLUE_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            blue_ml += barrel.ml_per_barrel * qty
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
-                        if barrel_type == 4 and barrel.sku == "SMALL_DARK_BARREL":
-                            result.append(
-                                {
-                                    "sku": "SMALL_DARK_BARREL",
-                                    "quantity": qty
-                                }
-                            )
-                            dark_ml += barrel.ml_per_barrel * qty
-                            gold -= barrel.price * qty
-                            print(f'gold {gold}')
+            for barrel in wholesale_catalog:
+                total_ml = red_ml + green_ml + blue_ml + dark_ml
+                qty = gold // barrel.price
+                qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
+
+                if qty > (ml_limit // barrel.ml_per_barrel)//2:
+                    qty = (ml_limit // barrel.ml_per_barrel)//2
+                if qty >= 1:
+                    if barrel_type == 1 and barrel.sku == "MEDIUM_GREEN_BARREL":
+                        result.append(
+                            {
+                                "sku": "MEDIUM_GREEN_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                        green_ml += barrel.ml_per_barrel * qty
+                    if barrel_type == 2 and barrel.sku == "MEDIUM_RED_BARREL":
+                        result.append(
+                            {
+                                "sku": "MEDIUM_RED_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        red_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                    if barrel_type == 3 and barrel.sku == "MEDIUM_BLUE_BARREL":
+                        result.append(
+                            {
+                                "sku": "MEDIUM_BLUE_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                        blue_ml += barrel.ml_per_barrel * qty
+                    if barrel_type == 4 and barrel.sku == "MEDIUM_DARK_BARREL":
+                        result.append(
+                            {
+                                "sku": "MEDIUM_DARK_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                        dark_ml += barrel.ml_per_barrel * qty
+        
+        if gold >= 100:
+            barrel_type = random.randint(1, 2)
+            if gold >= 120: barrel_type = random.randint(1, 3)
+            if min(red_ml, green_ml, blue_ml) == green_ml:
+                barrel_type = 1
+            elif min(red_ml, green_ml, blue_ml) == red_ml:
+                barrel_type = 2
+            elif min(red_ml, green_ml, blue_ml) == blue_ml and gold >= 120:
+                barrel_type = 3
+            # elif min(red_ml, green_ml, blue_ml) == dark_ml:
+            #     barrel_type = 4
+            for barrel in wholesale_catalog:
+                total_ml = red_ml + green_ml + blue_ml + dark_ml
+                qty = gold // barrel.price
+                qty = min (qty, (ml_limit - total_ml) // barrel.ml_per_barrel, barrel.quantity)
+                if qty > (ml_limit // barrel.ml_per_barrel)//2:
+                    qty = (ml_limit // barrel.ml_per_barrel)//2
+                if qty >= 1 and barrel.ml_per_barrel * qty < ml_limit - total_ml:
+                    if barrel_type == 1 and barrel.sku == "SMALL_GREEN_BARREL":
+                        result.append(
+                            {
+                                "sku": "SMALL_GREEN_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                        green_ml += barrel.ml_per_barrel * qty
+                    if barrel_type == 2 and barrel.sku == "SMALL_RED_BARREL":
+                        result.append(
+                            {
+                                "sku": "SMALL_RED_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                        red_ml += barrel.ml_per_barrel * qty
+                    if barrel_type == 3 and barrel.sku == "SMALL_BLUE_BARREL":
+                        result.append(
+                            {
+                                "sku": "SMALL_BLUE_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        blue_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
+                    if barrel_type == 4 and barrel.sku == "SMALL_DARK_BARREL":
+                        result.append(
+                            {
+                                "sku": "SMALL_DARK_BARREL",
+                                "quantity": qty
+                            }
+                        )
+                        dark_ml += barrel.ml_per_barrel * qty
+                        gold -= barrel.price * qty
+                        print(f'gold {gold}')
     print(f'result: {result}')
     return result
         
