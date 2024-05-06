@@ -58,27 +58,99 @@ def search_orders(
     """
     print(f"customer name: {customer_name}\npotion_sku: {potion_sku}\nsearch page: {search_page}\nsort col: {sort_col}\nsort order: {sort_order}: ")
     with db.engine.begin() as connection:
-        customers = connection.execute(sqlalchemy.text('''
-            SELECT customer_name, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
-            FROM carts
-            join customers on carts.character_id = customers.id
-            join items on carts.item_id = items.id
-            WHERE customer_name ILIKE ':customer''%'
-            ORDER BY :col_order :order
-            Limit 5 OFFSET 0'''), [{"customer" : customer_name, "col_order" : sort_col, "order" : sort_order}]).fetchall()
-        print(customers)
+        customer_name += '%'
+        if sort_col == "timestamp":
+            if sort_order == "asc":
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY customers.created_at asc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+            else:
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY customers.created_at desc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+        if sort_col == "customer_name": 
+            if sort_order == "asc":
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY customer_name asc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+            else:
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY customer_name desc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+        if sort_col == "item_sku": 
+            if sort_order == "asc":
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY sku asc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+            else:
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY sku desc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+        if sort_col == "line_item_total": 
+            if sort_order == "asc":
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY item_qty asc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+            else:
+                customers1 = connection.execute(sqlalchemy.text('''
+                    SELECT customer_name, customers.created_at, sku, item_qty, red_qty, green_qty, blue_qty, dark_qty, cost 
+                    FROM carts
+                    join customers on carts.character_id = customers.id
+                    join items on carts.item_id = items.id
+                    WHERE customer_name ILIKE :customer
+                    ORDER BY item_qty desc
+                    Limit 5 OFFSET 0'''), [{"customer" : customer_name}]).fetchall()
+        print(customers1)
+        result = []
+        for customer in customers1:
+            result.append(
+                {
+                "line_item_id": customer.item_qty,
+                "item_sku": customer.sku,
+                "customer_name": customer.customer_name,
+                "line_item_total": customer.cost * customer.item_qty,
+                "timestamp": customer.created_at,
+                }
+            )
     return {
         "previous": "",
         "next": "",
-        "results": [
-            {
-                "line_item_id": 1,
-                "item_sku": "1 oblivion potion",
-                "customer_name": "Scaramouche",
-                "line_item_total": 50,
-                "timestamp": "2021-01-01T00:00:00Z",
-            }
-        ],
+        "results": result,
     }
 
 
