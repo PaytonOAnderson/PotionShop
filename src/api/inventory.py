@@ -43,7 +43,7 @@ def get_inventory():
                                                 OR transaction_type = 'green_ml'
                                                 OR transaction_type = 'blue_ml'
                                                 OR transaction_type = 'dark_ml' '''), [{"my_account_id" : 1}]).fetchone()[0] + my_account.ml
-        print(f'potions: {potions}\n ml: {my_account.ml}\ngold: {gold}')
+        print(f'potions: {potions}\n ml: {total_ml}\ngold: {gold}')
     return {"number_of_potions": potions, "ml_in_barrels": total_ml, "gold": gold}
 
 # Gets called once a day
