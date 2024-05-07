@@ -147,9 +147,17 @@ def search_orders(
                 "timestamp": customer.created_at,
                 }
             )
+    try: 
+        next = (int(search_page) + 1) * 5
+    except:
+        next = 5
+    try:
+        previous = str((int(search_page) - 1) * 5)
+    except:
+        previous = ""
     return {
-        "previous": "",
-        "next": "",
+        "previous": previous,
+        "next": f"{next}",
         "results": result,
     }
 
