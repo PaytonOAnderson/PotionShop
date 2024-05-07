@@ -78,10 +78,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             if gold >= 600: barrel_type = random.randint(1, 3)
             if min(red_ml, green_ml, blue_ml) == green_ml:
                 barrel_type = 1
-            elif min(red_ml, green_ml, blue_ml) == red_ml:
-                barrel_type = 2
-            elif min(red_ml, green_ml, blue_ml) == blue_ml:
+            elif min(red_ml, green_ml, blue_ml) == blue_ml and gold > 600:
                 barrel_type = 3
+            elif min(red_ml, green_ml, blue_ml) == red_ml and gold > 500:
+                barrel_type = 2
             # elif min(red_ml, green_ml, blue_ml) == dark_ml:
             #     barrel_type = 4
             #TODO create and implement better barrel buying logic
@@ -142,10 +142,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             else:
                 if min(red_ml, green_ml, blue_ml) == green_ml:
                     barrel_type = 1
+                elif min(red_ml, green_ml, blue_ml) == blue_ml and gold > 300:
+                    barrel_type = 3
                 elif min(red_ml, green_ml, blue_ml) == red_ml:
                     barrel_type = 2
-                elif min(red_ml, green_ml, blue_ml) == blue_ml:
-                    barrel_type = 3
                 # elif min(red_ml, green_ml, blue_ml) == dark_ml:
                 #     barrel_type = 4
             for barrel in wholesale_catalog:
@@ -202,10 +202,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             if gold >= 120: barrel_type = random.randint(1, 3)
             if min(red_ml, green_ml, blue_ml) == green_ml:
                 barrel_type = 1
-            elif min(red_ml, green_ml, blue_ml) == red_ml:
-                barrel_type = 2
             elif min(red_ml, green_ml, blue_ml) == blue_ml and gold >= 120:
                 barrel_type = 3
+            elif min(red_ml, green_ml, blue_ml) == red_ml:
+                barrel_type = 2
             # elif min(red_ml, green_ml, blue_ml) == dark_ml:
             #     barrel_type = 4
             for barrel in wholesale_catalog:
