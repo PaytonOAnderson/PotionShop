@@ -65,43 +65,79 @@ def get_bottle_plan():
         blue_ml = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}")).fetchone()[0]
 
         dark_ml = connection.execute(sqlalchemy.text(f"SELECT num_dark_ml FROM {INVENTORY}")).fetchone()[0]
-
-        for item in items:
-            qty = 0
-            min_qty = float('inf')  # Initialize min_qty to positive infinity
-            # print(f"item {item}")
-            if item.red_qty != 0:
-                min_qty = min(min_qty, red_ml // item.red_qty)
-                # print(f"1 : {min_qty}")
-            if item.green_qty != 0:
-                min_qty = min(min_qty, green_ml // item.green_qty)
-                # print(f"2 : {min_qty}")
-            if item.blue_qty != 0:
-                min_qty = min(min_qty, blue_ml // item.blue_qty)
-                # print(f"3 : {min_qty}")
-            if item.dark_qty != 0:
-                min_qty = min(min_qty, dark_ml // item.dark_qty)
-                # print(f"4 : {min_qty}")
-            if min_qty != float('inf'):
-                # max_qty = potion_limit // item_count
-                max_qty = 50
-                max_qty -= item.qty
-                qty = min(max_qty, min_qty, potion_limit - total_potions)
-                # print(f"max: {max_qty} min: {min_qty} limit - total = {potion_limit - total_potions}, {potion_limit}, {total_potions}")
+        green_ml = red_ml = blue_ml = dark_ml = 2000
+        print(f"greenml: {green_ml}")
+        # for item in items:
+        #     qty = 0
+        #     min_qty = float('inf')  # Initialize min_qty to positive infinity
+        #     # print(f"item {item}")
+        #     if item.red_qty != 0:
+        #         min_qty = min(min_qty, red_ml // item.red_qty)
+        #         # print(f"1 : {min_qty}")
+        #     if item.green_qty != 0:
+        #         min_qty = min(min_qty, green_ml // item.green_qty)
+        #         # print(f"2 : {min_qty}")
+        #     if item.blue_qty != 0:
+        #         min_qty = min(min_qty, blue_ml // item.blue_qty)
+        #         # print(f"3 : {min_qty}")
+        #     if item.dark_qty != 0:
+        #         min_qty = min(min_qty, dark_ml // item.dark_qty)
+        #         # print(f"4 : {min_qty}")
+        #     if min_qty != float('inf'):
+        #         # max_qty = potion_limit // item_count
+        #         max_qty = 50
+        #         max_qty -= item.qty
+        #         qty = min(max_qty, min_qty, potion_limit - total_potions)
+        #         # print(f"max: {max_qty} min: {min_qty} limit - total = {potion_limit - total_potions}, {potion_limit}, {total_potions}")
                 
-                # print(f"qty to bottle: {qty}")
-                if qty > 0:
-                    result.append(
-                        {
-                            "potion_type": [item.red_qty, item.green_qty, item.blue_qty, item.dark_qty],
-                            "quantity": qty,
-                        }
-                    )
-                    total_potions += qty
-                    red_ml -= item.red_qty * qty
-                    green_ml -= item.green_qty * qty
-                    blue_ml -= item.blue_qty * qty
-                    dark_ml -= item.dark_qty * qty
+        #         # print(f"qty to bottle: {qty}")
+        #         if qty > 0:
+        #             result.append(
+        #                 {
+        #                     "potion_type": [item.red_qty, item.green_qty, item.blue_qty, item.dark_qty],
+        #                     "quantity": qty,
+        #                 }
+        #             )
+        #             total_potions += qty
+        #             red_ml -= item.red_qty * qty
+        #             green_ml -= item.green_qty * qty
+        #             blue_ml -= item.blue_qty * qty
+        #             dark_ml -= item.dark_qty * qty
+        loop = True
+        
+        print(f"items: {items}")
+        item_list = [0,0,0,0,0,0]
+        item_info = []
+        for item in items:
+            item_info.append(item)
+        while loop:
+            cur_list = item_list.copy()
+            print(f"looping")
+            print(f"2\nitem list: {item_list}\ncurlist:{cur_list}")
+            for count, item in enumerate(item_info):
+                print(f"item.red: {item.red_qty}\n red ml: {red_ml}")
+                if item.red_qty <= red_ml and item.green_qty <= green_ml and item.blue_qty <= blue_ml and item.dark_qty <= dark_ml and sum(item_list) + total_potions < potion_limit:
+                    item_list[count] += 1
+                    red_ml -= item.red_qty
+                    green_ml -= item.green_qty
+                    blue_ml -= item.blue_qty
+                    dark_ml -= item.dark_qty
+            print(f"2\nitem list: {item_list}\ncurlist:{cur_list}")
+            if cur_list == item_list:
+                loop = False
+        print("\ndone looping")
+        print(f"items: {items}")
+        for count, item in enumerate(item_info):
+            print(f'itemlist: {item_list[count]}')
+            if item_list[count] > 0:
+                result.append(
+                    {
+                        "potion_type": [item.red_qty, item.green_qty, item.blue_qty, item.dark_qty],
+                        "quantity": item_list[count],
+                    }
+                )
+
+
         print(f"bottler result: {result}")
         return result
         
