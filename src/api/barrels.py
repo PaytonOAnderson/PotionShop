@@ -256,7 +256,57 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         #                 gold -= barrel.price * qty
         #                 print(f'gold {gold}')
 
-        #small barrel looping
+        #LARGE barrel looping
+        loop = False
+        for barrel in wholesale_catalog:
+            if "LARGE" in barrel.sku:
+                loop = True
+                print("LARGE in a barrel sku")
+                break
+        i = 0
+        types = [0,0,0,0]
+        while gold >= 400 and loop and total_ml + 10000 <= ml_limit:
+            print(f"loop: {i}")
+            i += 1
+            print(f"min(red_ml, green_ml, blue_ml): {min(red_ml, green_ml, blue_ml)}\nred: {red_ml}\ngreen: {green_ml}\nblue: {blue_ml}\ngold: {gold}\ntypes: {types}")
+            if min(red_ml, green_ml, blue_ml) == green_ml and gold >= 400 and types[1] < 30:
+                types[1] += 1
+                gold -= 400
+                green_ml += 10000
+            elif min(red_ml, green_ml, blue_ml) == blue_ml and gold >= 600 and types[2] < 30:
+                types[2] += 1
+                gold -= 600
+                blue_ml += 10000
+            elif min(red_ml, green_ml, blue_ml) == red_ml and gold >= 500 and types[0] < 30:
+                types[0] += 1
+                gold -= 500
+                red_ml += 10000
+            else:
+                loop = False
+            total_ml = green_ml + red_ml + blue_ml + dark_ml
+        if types[0] > 0:
+            result.append(
+                {
+                    "sku": "LARGE_RED_BARREL",
+                    "quantity": types[0]
+                }
+            )
+        if types[1] > 0:
+            result.append(
+                {
+                    "sku": "LARGE_GREEN_BARREL",
+                    "quantity": types[1]
+                }
+            )
+        if types[2] > 0:
+            result.append(
+                {
+                    "sku": "LARGE_BLUE_BARREL",
+                    "quantity": types[2]
+                }
+            )
+
+        #medium barrel looping
         loop = False
         for barrel in wholesale_catalog:
             if "MEDIUM" in barrel.sku:
@@ -265,7 +315,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 break
         i = 0
         types = [0,0,0,0]
-        while gold >= 100 and loop and total_ml + 500 <= ml_limit:
+        while gold >= 250 and loop and total_ml + 2500 <= ml_limit:
             print(f"loop: {i}")
             i += 1
             print(f"min(red_ml, green_ml, blue_ml): {min(red_ml, green_ml, blue_ml)}\nred: {red_ml}\ngreen: {green_ml}\nblue: {blue_ml}\ngold: {gold}\ntypes: {types}")
