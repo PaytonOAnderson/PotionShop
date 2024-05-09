@@ -65,8 +65,6 @@ def get_bottle_plan():
         blue_ml = connection.execute(sqlalchemy.text(f"SELECT num_blue_ml FROM {INVENTORY}")).fetchone()[0]
 
         dark_ml = connection.execute(sqlalchemy.text(f"SELECT num_dark_ml FROM {INVENTORY}")).fetchone()[0]
-        green_ml = red_ml = blue_ml = dark_ml = 2000
-        print(f"greenml: {green_ml}")
         # for item in items:
         #     qty = 0
         #     min_qty = float('inf')  # Initialize min_qty to positive infinity
