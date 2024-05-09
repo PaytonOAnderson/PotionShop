@@ -113,24 +113,17 @@ def get_bottle_plan():
         i = 0
         while loop or i < 50:
             cur_list = item_list.copy()
-            print(f"looping")
-            print(f"2\nitem list: {item_list}\ncurlist:{cur_list}")
             for count, item in enumerate(item_info):
-                print(f"item.red: {item.red_qty}\n red ml: {red_ml}")
                 if item.red_qty <= red_ml and item.green_qty <= green_ml and item.blue_qty <= blue_ml and item.dark_qty <= dark_ml and sum(item_list) + total_potions < potion_limit and item.qty <= i:
                     item_list[count] += 1
                     red_ml -= item.red_qty
                     green_ml -= item.green_qty
                     blue_ml -= item.blue_qty
                     dark_ml -= item.dark_qty
-            print(f"2\nitem list: {item_list}\ncurlist:{cur_list}")
             if cur_list == item_list:
                 loop = False
             i += 1
-        print("\ndone looping")
-        print(f"items: {items}")
         for count, item in enumerate(item_info):
-            print(f'itemlist: {item_list[count]}')
             if item_list[count] > 0:
                 result.append(
                     {
