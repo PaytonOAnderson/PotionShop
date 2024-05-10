@@ -327,6 +327,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 break
         i = 0
         types = [0,0,0,0]
+        if min(red_ml, green_ml, blue_ml) > ml_limit/8:
+            loop = False
         while gold >= 250 and loop and total_ml + 2500 <= ml_limit:
             print(f"loop: {i}")
             i += 1
