@@ -59,10 +59,14 @@ def get_capacity_plan():
         current_ml_capacity = connection.execute(sqlalchemy.text(f"SELECT ml_capacity FROM {CAPACITY}")).fetchone()[0] // 10000
         potion_capacity = 0
         ml_capacity = 0
-        if gold >= 2100:
+
+        if gold >= 3500:
+            potion_capacity = 1
+            ml_capacity = 2
+        elif gold >= 2100:
             potion_capacity = 1
             ml_capacity = 1
-        if gold >= 1100:
+        elif gold >= 1100:
             if current_ml_capacity >= current_potion_capacity:
                 potion_capacity = 1
             else:
