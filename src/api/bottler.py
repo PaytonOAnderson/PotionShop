@@ -104,10 +104,10 @@ def get_bottle_plan():
         loop = True
         
         print(f"items: {items}")
-        item_list = [0,0,0,0,0,0]
         item_info = []
         for item in items:
             item_info.append(item)
+        item_list = [0] * len(item_info)
         i = 0
         while loop or i < 50:
             cur_list = item_list.copy()
