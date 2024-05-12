@@ -112,7 +112,9 @@ def get_bottle_plan():
         while loop or i < potion_limit // 6:
             cur_list = item_list.copy()
             for count, item in enumerate(item_info):
-                if item.red_qty <= red_ml and item.green_qty <= green_ml and item.blue_qty <= blue_ml and item.dark_qty <= dark_ml and sum(item_list) + total_potions < potion_limit and item.qty <= i:
+                test = item.qty <= i or item.sku == "RAINBOW_0"
+                print(f"test: {test}")
+                if item.red_qty <= red_ml and item.green_qty <= green_ml and item.blue_qty <= blue_ml and item.dark_qty <= dark_ml and sum(item_list) + total_potions < potion_limit and test:
                     item_list[count] += 1
                     red_ml -= item.red_qty
                     green_ml -= item.green_qty
