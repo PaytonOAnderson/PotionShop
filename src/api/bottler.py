@@ -52,10 +52,10 @@ def get_bottle_plan():
         #TODO bottle potions up to potion_limit//types of potion
         potion_limit = connection.execute(sqlalchemy.text(f"SELECT potion_capacity FROM {CAPACITY}")).fetchone()[0]
         result = []
-        items = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE sku != 'TEAL_POTION_0'"))
+        items = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE id <= 6 or id >= 11"))
         print(f"items {items}")
-        item_count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {ITEMS} WHERE sku != 'TEAL_POTION_0'")).fetchone()[0]
-        print(f"item count {item_count}")
+        # item_count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {ITEMS} WHERE sku != 'TEAL_POTION_0'")).fetchone()[0]
+        # print(f"item count {item_count}")
         
 
         green_ml = connection.execute(sqlalchemy.text(f"SELECT num_green_ml FROM {INVENTORY}")).fetchone()[0]
@@ -112,8 +112,7 @@ def get_bottle_plan():
         while loop or i < potion_limit // 6:
             cur_list = item_list.copy()
             for count, item in enumerate(item_info):
-                test = item.qty <= i or item.sku == "RAINBOW_0"
-                print(f"test: {test}")
+                test = item_list[count] <= i or item.sku == "RAINBOW_0"
                 if item.red_qty <= red_ml and item.green_qty <= green_ml and item.blue_qty <= blue_ml and item.dark_qty <= dark_ml and sum(item_list) + total_potions < potion_limit and test:
                     item_list[count] += 1
                     red_ml -= item.red_qty
