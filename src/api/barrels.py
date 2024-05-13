@@ -270,7 +270,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             print(f"loop: {i}")
             i += 1
             print(f"min(red_ml, green_ml, blue_ml): {min(red_ml, green_ml, blue_ml)}\nred: {red_ml}\ngreen: {green_ml}\nblue: {blue_ml}\ngold: {gold}\ntypes: {types}")
-            if max(red_ml, green_ml, blue_ml) != dark_ml and gold >= 750 and types[3] < 30 and dark:
+            if dark_ml < 10000 and gold >= 750 and types[3] < 30:
                 types[3] += 1
                 gold -= 750
                 dark_ml += 10000

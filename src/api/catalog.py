@@ -14,7 +14,7 @@ def get_catalog():
     #TODO determine catalog by the date/time if that correlates to character class visits
     with db.engine.begin() as connection:
         result = []
-        potions_avaliable = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE  qty > 0"))
+        potions_avaliable = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE  qty > 7 ORDER BY cost desc, qty asc LIMIT 6"))
         for potions in potions_avaliable:
             result.append(
                 {
