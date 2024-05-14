@@ -52,7 +52,17 @@ def get_bottle_plan():
         #TODO bottle potions up to potion_limit//types of potion
         potion_limit = connection.execute(sqlalchemy.text(f"SELECT potion_capacity FROM {CAPACITY}")).fetchone()[0]
         result = []
-        items = connection.execute(sqlalchemy.text(f"SELECT * FROM {ITEMS} WHERE id <= 6 or id >= 11"))
+        items = connection.execute(sqlalchemy.text(
+            '''select
+                *
+                from
+                items
+                where
+                (
+                    items.id <= 6
+                    or items.id >= 11
+                )
+                and (items.cost >= 50);'''))
         print(f"items {items}")
         # item_count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {ITEMS} WHERE sku != 'TEAL_POTION_0'")).fetchone()[0]
         # print(f"item count {item_count}")
