@@ -61,7 +61,7 @@ def get_capacity_plan():
         ml_capacity = 0
 
         if gold >= 5500:
-            potion_capacity = 2
+            potion_capacity = 0
             ml_capacity = 0
         elif gold >= 3500:
             potion_capacity = 1
