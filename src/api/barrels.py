@@ -65,8 +65,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         dark_ml = result[3]
         total_ml = red_ml + green_ml + blue_ml + dark_ml
         result = []
-        print(f'result: {result}')
-        return result
         print(wholesale_catalog)
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
         for row in gold_table:
