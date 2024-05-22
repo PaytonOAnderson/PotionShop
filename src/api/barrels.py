@@ -320,11 +320,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
         #medium barrel looping
         loop = False
-        for barrel in wholesale_catalog:
-            if "MEDIUM" in barrel.sku:
-                loop = True
-                print("medium in a barrel sku")
-                break
+        # Stop buying medium barrels
+        # for barrel in wholesale_catalog:
+        #     if "MEDIUM" in barrel.sku:
+        #         loop = True
+        #         print("medium in a barrel sku")
+        #         break
         i = 0
         types = [0,0,0,0]
         while gold >= 250 and loop and total_ml + 2500 <= ml_limit:
@@ -372,11 +373,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
         #small barrel looping
         loop = False
-        for barrel in wholesale_catalog:
-            if "SMALL" in barrel.sku:
-                loop = True
-                print("small in a barrel sku")
-                break
+        # Stop buying small barrels
+        # for barrel in wholesale_catalog:
+        #     if "SMALL" in barrel.sku:
+        #         loop = True
+        #         print("small in a barrel sku")
+        #         break
         i = 0
         types = [0,0,0,0]
         while gold >= 100 and loop and total_ml + 500 <= ml_limit:
