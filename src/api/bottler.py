@@ -61,8 +61,7 @@ def get_bottle_plan():
                 (
                     items.id <= 6
                     or items.id >= 11
-                )
-                and (items.cost >= 50);'''))
+                );'''))
         print(f"items {items}")
         # item_count = connection.execute(sqlalchemy.text(f"SELECT COUNT(*) FROM {ITEMS} WHERE sku != 'TEAL_POTION_0'")).fetchone()[0]
         # print(f"item count {item_count}")
