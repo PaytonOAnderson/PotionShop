@@ -64,7 +64,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         blue_ml = result[2]
         dark_ml = result[3]
         total_ml = red_ml + green_ml + blue_ml + dark_ml
-        result = []
         return result
         print(wholesale_catalog)
         gold_table = connection.execute(sqlalchemy.text(f"SELECT gold FROM {INVENTORY}"))
@@ -275,15 +274,15 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 types[3] += 1
                 gold -= 750
                 dark_ml += 10000
-            elif min(red_ml, green_ml, blue_ml) == green_ml and gold >= 400 and types[1] < 30:
+            elif min(red_ml, green_ml, blue_ml) == green_ml  and green_ml < 10000 and gold >= 400 and types[1] < 30:
                 types[1] += 1
                 gold -= 400
                 green_ml += 10000
-            elif min(red_ml, green_ml, blue_ml) == blue_ml and gold >= 600 and types[2] < 30:
+            elif min(red_ml, green_ml, blue_ml) == blue_ml  and blue_ml < 10000 and gold >= 600 and types[2] < 30:
                 types[2] += 1
                 gold -= 600
                 blue_ml += 10000
-            elif min(red_ml, green_ml, blue_ml) == red_ml and gold >= 500 and types[0] < 30:
+            elif min(red_ml, green_ml, blue_ml) == red_ml  and red_ml < 10000 and gold >= 500 and types[0] < 30:
                 types[0] += 1
                 gold -= 500
                 red_ml += 10000
@@ -318,6 +317,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     "quantity": types[3]
                 }
             )
+            
+        print(f'result: {result}')
+        return result
 
         #medium barrel looping
         loop = False
